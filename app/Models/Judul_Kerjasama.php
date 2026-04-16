@@ -34,4 +34,9 @@ class Judul_Kerjasama extends Model
     {
         return $this->hasMany(Pihak_Bersangkutan::class, 'judul_id');
     }
-}
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'judul_id');
+    }
+} 

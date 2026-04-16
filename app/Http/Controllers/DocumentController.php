@@ -8,6 +8,7 @@ use App\Models\Mitra;
 use App\Models\Judul_Kerjasama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class DocumentController extends Controller
@@ -23,15 +24,74 @@ class DocumentController extends Controller
         };
     }
 
+    /**
+     * Generate nomor document otomatis berdasarkan document type
+     * Format: TYPE + NOMOR URUT (4 digit) + "/" + TAHUN
+     * Contoh: MoU0001/2026, PKS0001/2026, BA0001/2026
+     */
+    private function generateDocumentNumber($templateId)
+    {
+        // Get document type dari template
+        $template = Template::find($templateId);
+        if (!$template) {
+            throw new \Exception('Template tidak ditemukan');
+        }
+
+        $documentType = $template->document_type;
+        $currentYear = Carbon::now()->year;
+
+        // Dapatkan type prefix
+        $typePrefix = $this->getTypePrefix($documentType);
+
+        // Hitung nomor urut terakhir untuk type ini pada tahun ini
+        $lastNumber = Document::where('nomor_document', 'like', $typePrefix . '%/' . $currentYear)
+            ->orderByRaw('CAST(SUBSTR(nomor_document, ' . (strlen($typePrefix) + 1) . ', 4) AS UNSIGNED) DESC')
+            ->first();
+
+        if ($lastNumber) {
+            // Extract nomor dari format TYPE0001/2026
+            preg_match('/(' . preg_quote($typePrefix) . ')(\d+)/', $lastNumber->nomor_document, $matches);
+            $lastNum = intval($matches[2]);
+            $nextNum = $lastNum + 1;
+        } else {
+            $nextNum = 1;
+        }
+
+        // Generate nomor dengan format 4 digit
+        $nomorDocument = $typePrefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT) . '/' . $currentYear;
+
+        return $nomorDocument;
+    }
+
+    /**
+     * Get type prefix berdasarkan document type
+     */
+    private function getTypePrefix($documentType)
+    {
+        return match ($documentType) {
+            'MoU' => 'MoU',
+            'PKS' => 'PKS',
+            'Berita Acara' => 'BA',
+            default => 'DOC',
+        };
+    }
+
     public function index($slug)
     {
         $type = $this->slugToType($slug);
 
-        $documents = Document::whereHas('template', function ($q) use ($type) {
+        $query = Document::whereHas('template', function ($q) use ($type) {
             $q->where('document_type', $type);
-        })->latest()->paginate(10);
+        });
 
-        return view('documents.index', compact('documents', 'type', 'slug'));
+        if (auth()->check() && auth()->user()->role === 'staff') {
+            $query->where('user_id', auth()->id());
+        }
+
+        $documents = $query->latest()->paginate(10);
+        $documents_file = $documents->first();
+
+        return view('documents.index', compact('documents', 'type', 'slug','documents_file'));
     }
 
 
@@ -62,6 +122,11 @@ class DocumentController extends Controller
 
         $data['user_id'] = Auth::id();
 
+        // Generate nomor document otomatis
+        if (!empty($data['template_id'])) {
+            $data['nomor_document'] = $this->generateDocumentNumber($data['template_id']);
+        }
+
         $document = Document::create($data);
 
         // determine redirect slug from selected template (if provided) or fallback to origin_slug
@@ -87,12 +152,22 @@ class DocumentController extends Controller
     public function show(string $id)
     {
         $document = Document::findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         return view('documents.show', compact('document'));
     }
 
     public function edit($id)
     {
         $document = Document::findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $docType = optional($document->template)->document_type ?? 'MoU';
         $templates = Template::where('document_type', $docType)->get();
         $mitras = Mitra::select('id','nama')->get();
@@ -104,6 +179,10 @@ class DocumentController extends Controller
     public function update(Request $request, $id)
     {
         $document = Document::findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'template_id' => 'nullable|exists:templates,id',
@@ -123,6 +202,11 @@ class DocumentController extends Controller
     public function destroy($id)
     {
         $document = Document::findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $document->delete();
 
         return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'))->with('success', 'Document deleted.');
@@ -136,6 +220,10 @@ class DocumentController extends Controller
     public function pdf($id)
     {
         $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         // If using barryvdh/laravel-dompdf (preferred)
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {

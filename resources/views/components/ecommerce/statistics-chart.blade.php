@@ -3,10 +3,10 @@
     <div class="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div class="w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                Statistics
+                Statistics Dokumen Kerjasama
             </h3>
             <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                Target you’ve set for each month
+                
             </p>
         </div>
 
@@ -16,9 +16,9 @@
 
                 @php
                     $options = [
-                        ['value' => 'overview', 'label' => 'Overview'],
-                        ['value' => 'sales', 'label' => 'Sales'],
-                        ['value' => 'revenue', 'label' => 'Revenue'],
+                        ['value' => 'overview', 'label' => 'MoU'],
+                        ['value' => 'sales', 'label' => 'PKS'],
+                        ['value' => 'revenue', 'label' => 'Berita Acara'],
                     ];
                 @endphp
 
@@ -34,28 +34,72 @@
             </div>
 
             <div x-data="{
+                startDate: null,
+                endDate: null,
+                csrfToken: document.querySelector('meta[name=csrf-token]') ? document.querySelector('meta[name=csrf-token]').content : '',
                 init() {
                     flatpickr(this.$refs.datepicker, {
                         mode: 'range',
-                        static: true,
+                        static: false,
+                        clickOpens: true,
                         monthSelectorType: 'static',
-                        dateFormat: 'M j',
+                        altInput: true,
+                        altFormat: 'M j, Y',
+                        dateFormat: 'Y-m-d',
                         defaultDate: [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
                         prevArrow: '<svg class=\'stroke-current\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M15.25 6L9 12.25L15.25 18.5\' stroke=\'\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>',
                         nextArrow: '<svg class=\'stroke-current\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M8.75 19L15 12.75L8.75 6.5\' stroke=\'\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>',
                         onReady: (selectedDates, dateStr, instance) => {
-                            instance.element.value = dateStr.replace('to', '-');
+                            if (selectedDates.length === 2) {
+                                this.startDate = instance.formatDate(selectedDates[0], 'Y-m-d');
+                                this.endDate = instance.formatDate(selectedDates[1], 'Y-m-d');
+                                this.updateStats();
+                            }
                             const customClass = instance.element.getAttribute('data-class');
                             if (instance.calendarContainer) {
                                 instance.calendarContainer.classList.add(customClass);
                             }
                         },
                         onChange: (selectedDates, dateStr, instance) => {
-                            instance.element.value = dateStr.replace('to', '-');
+                            if (selectedDates.length === 2) {
+                                this.startDate = instance.formatDate(selectedDates[0], 'Y-m-d');
+                                this.endDate = instance.formatDate(selectedDates[1], 'Y-m-d');
+                                this.updateStats();
+                            }
                         },
                     })
+                },
+                async updateStats() {
+                    if (!this.startDate || !this.endDate) return;
+
+                    try {
+                        const response = await fetch('{{ route('documents.filter') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': this.csrfToken,
+                            },
+                            body: JSON.stringify({
+                                start_date: this.startDate,
+                                end_date: this.endDate,
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            console.error('documents.filter request failed', response.statusText);
+                            return;
+                        }
+
+                        const data = await response.json();
+                        document.querySelector('#dashboard-mou-count')?.textContent = data.mou ?? 0;
+                        document.querySelector('#dashboard-pks-count')?.textContent = data.pks ?? 0;
+                        document.querySelector('#dashboard-berita-count')?.textContent = data.berita_acara ?? 0;
+                    } catch (error) {
+                        console.error('Failed to update document stats', error);
+                    }
                 }
-            }" class="relative max-w-40">
+            }" x-init="init()" class="relative max-w-40" @click="$refs.datepicker._flatpickr?.open()">
                 <input x-ref="datepicker" class="h-10 w-full max-w-11 rounded-lg border border-gray-200 bg-white py-2.5 pl-[34px] pr-4 text-theme-sm font-medium text-gray-700 shadow-theme-xs focus:outline-hidden focus:ring-0 focus-visible:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 xl:max-w-fit xl:pl-11" placeholder="Select dates" data-class="flatpickr-right" readonly="readonly" />
                 <div class="absolute inset-0 right-auto flex items-center pointer-events-none left-4">
                     <svg class="fill-gray-700 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

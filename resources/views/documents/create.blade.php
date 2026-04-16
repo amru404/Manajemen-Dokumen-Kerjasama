@@ -14,7 +14,7 @@
                     <select name="judul_id" class="mt-1 block w-full rounded-md border px-3 py-2">
                         <option value="">-- pilih judul --</option>
                         @foreach($juduls as $j)
-                            <option value="{{ $j->id }}" {{ old('judul_id') == $j->id ? 'selected' : '' }}>{{ $j->judul }}</option>
+                            <option value="{{ $j->id }}" {{ (old('judul_id') == $j->id || request('judul_id') == $j->id) ? 'selected' : '' }}>{{ $j->judul }}</option>
                         @endforeach
                     </select>
                     @error('judul_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

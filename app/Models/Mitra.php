@@ -15,6 +15,7 @@ class Mitra extends Model
         'jabatan',
         'alamat',
         'no_telp',
+        'email',
         'logo',
         'tanda_tangan',
     ];

@@ -13,7 +13,7 @@ class JudulKerjasamaController extends Controller
      */
     public function index()
     {
-        $kerjasama = Kerjasama::with('mitra')
+        $kerjasama = Kerjasama::with(['mitra','documents.template'])
         ->latest()
         ->paginate(10);
         return view('kerjasama.index',compact('kerjasama'));

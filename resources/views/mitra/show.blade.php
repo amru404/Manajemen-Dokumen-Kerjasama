@@ -15,22 +15,22 @@
                 <div>
                     <dl>
                         <div class="mb-3">
-                            <dt class="text-sm font-medium text-gray-500">Penanggung Jawab</dt>
+                            <dt class="text-md font-medium text-gray-700">Penanggung Jawab</dt>
                             <dd class="mt-1 text-theme-sm text-gray-700 dark:text-gray-400">{{ $mitra->penanggung_jawab }}</dd>
                         </div>
 
                         <div class="mb-3">
-                            <dt class="text-sm font-medium text-gray-500">Jabatan</dt>
+                            <dt class="text-md font-medium text-gray-700">Jabatan</dt>
                             <dd class="mt-1 text-theme-sm text-gray-700 dark:text-gray-400">{{ $mitra->jabatan }}</dd>
                         </div>
 
                         <div class="mb-3">
-                            <dt class="text-sm font-medium text-gray-500">Alamat</dt>
+                            <dt class="text-md font-medium text-gray-700">Alamat</dt>
                             <dd class="mt-1 text-theme-sm text-gray-700 dark:text-gray-400">{{ $mitra->alamat }}</dd>
                         </div>
 
                         <div class="mb-3">
-                            <dt class="text-sm font-medium text-gray-500">No Telepon</dt>
+                            <dt class="text-md font-medium text-gray-700">No Telepon</dt>
                             <dd class="mt-1 text-theme-sm text-gray-700 dark:text-gray-400">{{ $mitra->no_telp }}</dd>
                         </div>
                     </dl>
@@ -39,15 +39,15 @@
                 <div class="space-y-4">
                     @if($logoUrl)
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Logo</dt>
-                            <img src="{{ asset('storage/' . $mitra->logo) }}" alt="Logo Mitra" class="w-32 h-32 object-cover">
+                            <dt class="text-md font-medium text-gray-700">Logo</dt>
+                            <img src="{{ asset('storage/' . $mitra->logo) }}" alt="Logo Mitra" class="mt-2 max-h-40 object-contain>
                         </div>
                     @endif
 
                     @if($tandaTanganUrl)
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Tanda Tangan</dt>
-                            <img src="{{ $tandaTanganUrl }}" alt="Tanda Tangan {{ $mitra->nama }}" class="mt-2 max-h-40 object-contain">
+                            <dt class="text-md font-medium text-gray-700">Tanda Tangan</dt>
+                            <img src="{{ asset('storage/' . $tandaTanganUrl) }}" alt="Tanda Tangan {{ $mitra->nama }}" class="mt-2 max-h-40 object-contain">
                         </div>
                     @endif
                 </div>
@@ -92,17 +92,40 @@
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{$kj->judul}}</p>
                                 </td>
-                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></p>
+                                   <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $mou = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'MoU');
+                                    @endphp
+                                    @if($mou)
+                                        <a href="{{ route('documents.pdf', $mou->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open MoU"><i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/mou/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat MoU">+ Buat</a>
+                                    @endif
+                                </td>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $pks = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'PKS');
+                                    @endphp
+                                    @if($pks)
+                                        <a href="{{ route('documents.pdf', $pks->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open PKS"><i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/pks/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat PKS">+ Buat</a>
+                                    @endif
+                                </td>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $ba = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'Berita Acara');
+                                    @endphp
+                                    @if($ba)
+                                        <a href="{{ route('documents.pdf', $ba->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open Berita Acara">Berita <i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/berita-acara/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat Berita Acara">+ Buat</a>
+                                    @endif
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></p>
-                                </td>
-                                <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></p>
-                                </td>
-                                <td class="px-4 sm:px-6 py-3.5">
-                                    <a href="" class="flex justify-center text-center text-gray-700 cursor-pointer size-5 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400" title="Lihat detail">
+                                    <a href="{{ route('judul-kerjasama.show',$kj->id) }}" class="flex justify-center text-center text-gray-700 cursor-pointer size-5 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400" title="Lihat detail">
                                         <svg class="inline h-7 w-7 flex justify-center" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>

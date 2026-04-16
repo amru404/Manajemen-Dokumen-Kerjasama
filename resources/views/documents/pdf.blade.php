@@ -7,41 +7,149 @@
 
     <style>
         /* Basic A4 margins */
-        @page { margin: 3cm 2.5cm 3cm 2.5cm; }
-        body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.6; color: #000; }
+       /* =========================
+   GLOBAL DOCUMENT STYLE
+   ========================= */
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+            text-align: justify;
+        }
 
-        /* Wrapper */
-        .document-wrapper { text-align: justify; }
+        /* =========================
+        HEADINGS
+        ========================= */
+        h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
 
-        /* Head / metadata */
-        .doc-header { text-align: center; margin-bottom: 18pt; }
-        .doc-meta { margin-bottom: 12pt; }
-        .doc-meta td { padding: 3pt 6pt; vertical-align: top; }
+        h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            text-align: center;
+        }
 
-        /* Title */
-        .document-wrapper h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 18pt; }
-        .document-wrapper h2 { font-size: 12pt; font-weight: bold; margin: 18pt 0 12pt 0; text-transform: uppercase; }
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
 
-        /* Paragraphs and lists */
-        .document-wrapper p { margin: 0 0 12pt 0; }
-        .document-wrapper ul, .document-wrapper ol { margin-left: 24pt; margin-bottom: 12pt; }
+        /* =========================
+        PARAGRAPH
+        ========================= */
+        p {
+            margin: 0 0 10px 0;
+        }
 
-        /* Table (dompdf friendly) */
-        .document-wrapper table { width: 100%; border-collapse: collapse; margin-top: 12pt; }
-        .document-wrapper table th, .document-wrapper table td { padding: 6pt; vertical-align: top; border: 1px solid #000; }
-        .document-wrapper table th { font-weight: bold; }
-        /* Avoid page breaks inside table rows */
-        .document-wrapper table, .document-wrapper tr, .document-wrapper td { page-break-inside: avoid; }
+        /* =========================
+        LIST STYLE
+        ========================= */
+        ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
 
-        /* Signature block */
-        .signature-block { text-align: center; margin-top: 48pt; }
-        .signature-block img { height: 80px; margin: 8pt 0; }
+        ol li {
+            margin-bottom: 6px;
+        }
 
-        /* Small utility */
-        .muted { color: #555; font-size: 10pt; }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
 
-        /* Ensure headings don't get orphaned */
-        h1, h2 { page-break-after: avoid; page-break-before: avoid; }
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        /* =========================
+        PASAL TITLE
+        ========================= */
+        .pasal {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            text-align: center;
+
+        }
+
+        /* =========================
+        PIHAK INFO (IDENTITAS)
+        ========================= */
+        .identitas {
+            margin-bottom: 16px;
+        }
+
+        .identitas strong {
+            display: inline-block;
+            width: 100px;
+        }
+
+        /* =========================
+        PAYMENT SECTION
+        ========================= */
+        .payment-block {
+            margin-left: 20px;
+        }
+
+        .payment-block p {
+            margin-bottom: 6px;
+        }
+
+        /* =========================
+        BANK INFO
+        ========================= */
+        .bank-info {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        /* =========================
+        SIGNATURE AREA
+        ========================= */
+        .signature {
+            margin-top: 50px;
+            width: 100%;
+        }
+
+        .signature table {
+            width: 100%;
+            border: none;
+        }
+
+        .signature td {
+            width: 50%;
+            text-align: center;
+            vertical-align: top;
+            padding-top: 40px;
+        }
+
+        /* =========================
+        PAGE BREAK (FOR PDF)
+        ========================= */
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* =========================
+        SMALL TEXT
+        ========================= */
+        .small-text {
+            font-size: 10pt;
+        }
 
         /* Avoid flex, grid, absolute positioning */
     </style>

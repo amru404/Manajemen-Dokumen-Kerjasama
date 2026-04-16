@@ -1,6 +1,36 @@
 @extends('/layouts.app')
 
 @section('content')
+        <style>
+            /* editor.css */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            line-height: 1.8;
+            padding: 20px;
+            color: #000;
+        }
+
+        h1, h2, h3 {
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 12px;
+        }
+
+        .pasal {
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .signature td {
+            padding-top: 20px;
+        }
+
+        </style>
     <x-common.page-breadcrumb pageTitle="Edit Template" />
 
     <div class="space-y-6 mt-4">
@@ -46,60 +76,95 @@
         </div>
     </div>
 
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function initEditor() {
-                var textarea = document.querySelector('#template_format');
-                if (!textarea) return;
+        ClassicEditor.create(document.querySelector('#template_format'), {
+            toolbar: {
+                items: [
+                    'heading',
 
-                if (typeof CKEDITOR !== 'undefined') {
-                    try {
-                        if (CKEDITOR.instances['template_format']) {
-                            CKEDITOR.instances['template_format'].destroy(true);
-                        }
-                        CKEDITOR.replace('template_format', {
-                            height: 500,
-                            extraPlugins: 'colorbutton,font,justify,pastefromword,table,tableresize',
-                            toolbar: [
-                                { name: 'clipboard', items: ['Undo','Redo','-','PasteFromWord','PasteText','-','Cut','Copy'] },
-                                { name: 'styles', items: ['Format','Font','FontSize'] },
-                                { name: 'basicstyles', items: ['Bold','Italic','Underline','Strike','Subscript','Superscript','RemoveFormat'] },
-                                { name: 'colors', items: ['TextColor','BGColor'] },
-                                { name: 'paragraph', items: ['NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] },
-                                { name: 'links', items: ['Link','Unlink','Anchor'] },
-                                { name: 'insert', items: ['Image','Table','HorizontalRule','SpecialChar'] },
-                                { name: 'tools', items: ['Maximize','ShowBlocks'] },
-                                { name: 'editing', items: ['Scayt'] }
-                            ],
-                            allowedContent: true
-                        });
-                    } catch (e) {
-                        console.error('CKEditor init error:', e);
-                        showEditorError(textarea);
+                    '|',
+                    'bold', 'italic', 'underline', 'strikethrough',
+                    'subscript', 'superscript',
+
+                    '|',
+                    'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+
+                    '|',
+                    'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
+
+                    '|',
+                    'bulletedList', 'numberedList', 'todoList',
+
+                    '|',
+                    'outdent', 'indent',
+
+                    '|',
+                    'link', 'blockQuote',
+
+                    '|',
+                    'insertTable',
+
+                    '|',
+                    'horizontalLine', 'specialCharacters',
+
+                    '|',
+                    'undo', 'redo'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+
+            alignment: {
+                options: ['left', 'center', 'right', 'justify']
+            },
+
+            fontFamily: {
+                options: [
+                    'default',
+                    'Arial, Helvetica, sans-serif',
+                    'Times New Roman, Times, serif',
+                    'Calibri, sans-serif',
+                    'Georgia, serif',
+                    'Courier New, Courier, monospace'
+                ],
+                supportAllValues: true
+            },
+
+            fontSize: {
+                options: [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32],
+                supportAllValues: true
+            },
+
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells',
+                    'tableCellProperties',
+                    'tableProperties'
+                ]
+            },
+
+            htmlSupport: {
+                allow: [
+                    {
+                        name: /.*/,
+                        attributes: true,
+                        classes: true,
+                        styles: true
                     }
-                } else {
-                    // Try to load CKEditor dynamically
-                    console.warn('CKEditor not found, loading from CDN...');
-                    var s = document.createElement('script');
-                    s.src = 'https://cdn.ckeditor.com/4.25.1-lts/full-all/ckeditor.js';
-                    s.onload = function () { initEditor(); };
-                    s.onerror = function () { console.error('Failed to load CKEditor from CDN.'); showEditorError(textarea); };
-                    document.head.appendChild(s);
-                }
+                ]
             }
-
-            function showEditorError(textarea) {
-                if (!textarea) return;
+        })
+        .catch(error => {
+            console.error('CKEditor init error:', error);
+            var textarea = document.querySelector('#template_format');
+            if (textarea && !textarea.parentNode.querySelector('.editor-error')) {
                 var notice = document.createElement('div');
-                notice.className = 'text-red-500 mt-2';
+                notice.className = 'text-red-500 mt-2 editor-error';
                 notice.innerText = 'Editor gagal dimuat. Periksa koneksi atau console untuk info lebih lanjut.';
-                if (!textarea.parentNode.querySelector('.editor-error')) {
-                    notice.classList.add('editor-error');
-                    textarea.parentNode.appendChild(notice);
-                }
+                textarea.parentNode.appendChild(notice);
             }
-
-            initEditor();
         });
     </script>
 

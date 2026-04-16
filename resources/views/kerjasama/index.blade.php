@@ -45,14 +45,38 @@
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $kj->mitra ? $kj->mitra->nama : '-' }}</p>
                                 </td>
-                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <a href="{{ route('documents.pdf', $kj->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></a>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $mou = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'MoU');
+                                    @endphp
+                                    @if($mou)
+                                        <a href="{{ route('documents.pdf', $mou->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open MoU"><i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/mou/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat MoU">+ Buat</a>
+                                    @endif
                                 </td>
-                                <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></p>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $pks = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'PKS');
+                                    @endphp
+                                    @if($pks)
+                                        <a href="{{ route('documents.pdf', $pks->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open PKS"><i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/pks/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat PKS">+ Buat</a>
+                                    @endif
                                 </td>
-                                <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-center text-theme-sm dark:text-gray-400"><i class="fa-solid fa-file-pdf"></i></p>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                    @php
+                                        $ba = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'Berita Acara');
+                                    @endphp
+                                    @if($ba)
+                                        <a href="{{ route('documents.pdf', $ba->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open Berita Acara">Berita <i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/berita-acara/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat Berita Acara">+ Buat</a>
+                                    @endif
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center justify-center gap-2">

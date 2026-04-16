@@ -21,7 +21,7 @@
     <!-- DataTables Tailwind JS -->
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.tailwindcss.min.js"></script>
 
-    <title>{{ $title ?? 'Dashboard' }} | TailAdmin - Laravel Tailwind CSS Admin Dashboard Template</title>
+    <title>Wecan - MEDOKER</title>
     
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

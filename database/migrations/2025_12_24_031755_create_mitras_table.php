@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('penanggung_jawab');
             $table->string('jabatan');
             $table->text('alamat');
-            $table->integer('no_telp'); 
+            $table->string('no_telp', 20);
+            $table->string('email')->nullable();
             $table->string('logo')->nullable();
             $table->string('tanda_tangan')->nullable();
             $table->timestamps();

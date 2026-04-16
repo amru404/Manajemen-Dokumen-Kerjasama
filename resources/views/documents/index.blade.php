@@ -16,6 +16,7 @@
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Template</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Status</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Start - End</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Document</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Action</th>
                         </tr>
                     </thead>
@@ -34,9 +35,22 @@
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $d->status == 'published' ? 'bg-green-100 text-green-800' : ($d->status=='final' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">{{ $d->status }}</span>
                                 </td>
+                                
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $d->start_date ?? '—' }} - {{ $d->end_date ?? '—' }}</p>
                                 </td>
+                                
+                                 <td class="px-4 sm:px-6 py-3.5 text-center flex items-center justify-center">
+                                    @if($documents_file)
+                                        <a href="{{ route('documents.pdf', $documents_file->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open MoU"><i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                    @else
+                                        <a href="{{ url('/documents/mou/create') }}?judul_id={{ $documents_file }}" class="text-indigo-500" title="Buat MoU">+ Buat</a>
+                                    @endif
+                                </td>
+                                
+                                </span>
+                                </td>
+
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center gap-2">
                                         <a href="{{ route('documents.show', $d->id) }}" class="flex justify-center text-gray-700 size-5 hover:text-indigo-500" title="View">

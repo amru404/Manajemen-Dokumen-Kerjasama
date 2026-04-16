@@ -4,58 +4,86 @@ namespace App\Helpers;
 
 class MenuHelper
 {
-    public static function getMainNavItems()
-    {
-        return [
-            [
-                'icon' => 'dashboard',
-                'name' => 'Dashboard',
-                'path' => '/dashboard',
+ public static function getMainNavItems()
+{
+    return [
+        [
+            'icon' => 'dashboard',
+            'name' => 'Dashboard',
+            'path' => '/dashboard',
+            'roles' => ['admin', 'staff'],
+        ],
+        [
+            'icon' => 'user-profile',
+            'name' => 'User',
+            'path' => '/users',
+            'match' => '/users*',
+            'roles' => ['admin'], // ⬅️ STAFF TIDAK BISA LIHAT
+        ],
+        [
+            'icon' => 'mitra',
+            'name' => 'Mitra',
+            'path' => '/mitra',
+            'match' => '/mitra*',
+            'roles' => ['admin', 'staff'],
+        ],
+        [
+            'icon' => 'kerjasama',
+            'name' => 'Judul Kerjasama',
+            'path' => '/judul-kerjasama',
+            'match' => '/judul-kerjasama*',
+            'roles' => ['admin', 'staff'],
+        ],
+        [
+            'name' => 'Templates',
+            'icon' => 'forms',
+            'path' => '/templates',
+            'match' => '/templates*',
+            'roles' => ['admin', 'staff'],
+        ],
+        [
+            'name' => 'Dokumen',
+            'icon' => 'dokumen',
+            'roles' => ['admin', 'staff'],
+            'subItems' => [
+                ['name' => 'MoU', 'path' => '/documents/mou'],
+                ['name' => 'PKS', 'path' => '/documents/pks'],
+                ['name' => 'Berita Acara', 'path' => '/documents/berita-acara'],
             ],
-            [
-                'icon' => 'user-profile',
-                'name' => 'User',
-                'path' => '/users',
-                'match' => '/users*',
+        ],
+    ];
+}
 
-            ],
-            [
-                'icon' => 'mitra',
-                'name' => 'Mitra',
-                'path' => '/mitra',
-                'match' => '/mitra*',
-            ],
-             [
-                'icon' => 'kerjasama',
-                'name' => 'Judul Kerjasama',
-                'path' => '/judul-kerjasama',
-                'match' => '/judul-kerjasama*',
-            ],
-            [
-                'name' => 'Templates',
-                'icon' => 'forms',
-                'path' => '/templates',
-                'match' => '/templates*',
-            ],
-            [
-                'name' => 'Dokumen',
-                'icon' => 'dokumen',
-                'subItems' => [
-                    ['name' => 'MoU', 'path' => '/documents/mou'],
-                    ['name' => 'PKS', 'path' => '/documents/pks'],
-                    ['name' => 'Berita Acara', 'path' => '/documents/berita-acara'],
-                ],
-            ],
-        ];
-    }
 
 
     public static function getMenuGroups()
     {
+        $menus = collect(self::getMainNavItems())
+            ->filter(function ($items) {
+                if (! isset($items['roles'])) {
+                    return true;
+                }
+
+                return auth()->check()
+                    && in_array(auth()->user()->role, $items['roles']);
+            })
+            ->map(function ($items) {
+                if (isset($items['subItems'])) {
+                    $items['subItems'] = collect($items['subItems'])
+                        ->values()
+                        ->all();
+                }
+
+                return $items;
+            })
+            ->values()
+            ->all();
+
+        // Return as a single group for the sidebar
         return [
             [
-                'title' => 'Menu',
-                'items' => self::getMainNavItems()
+                'title' => 'Main',
+                'items' => $menus,
             ],
         ];
     }

@@ -15,7 +15,7 @@ class Document extends Model
         'judul_id',
         'pihak_1_id',
         'pihak_2_id',
-        'title',
+        'nomor_document',
         'content_html',
         'status',
         'start_date',
