@@ -21,8 +21,9 @@ class CreateDocumentsTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('pihak_1_id')->constrained('mitras')->onDelete('cascade');
             $table->foreignId('pihak_2_id')->constrained('mitras')->onDelete('cascade');
-            // title removed; judul_id added to reference existing Judul_Kerjasama
-            $table->longText('content_html');
+            $table->longText('content_html')->nullable();
+            $table->string('file_path')->nullable();
+            $table->enum('source', ['generate', 'upload'])->default('generate');
             $table->enum('status', ['draft', 'final', 'published'])->default('draft');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

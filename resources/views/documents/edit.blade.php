@@ -1,6 +1,7 @@
 @extends('/layouts.app')
 
 @section('content')
+
     <x-common.page-breadcrumb pageTitle="Edit Document - {{ optional($document->judul)->judul ?? 'Document' }}" />
 
     <div class="space-y-6 mt-4">

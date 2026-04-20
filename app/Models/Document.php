@@ -17,6 +17,8 @@ class Document extends Model
         'pihak_2_id',
         'nomor_document',
         'content_html',
+        'file_path',
+        'source',
         'status',
         'start_date',
         'end_date',

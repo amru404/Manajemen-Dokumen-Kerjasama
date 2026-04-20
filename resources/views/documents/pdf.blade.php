@@ -8,8 +8,8 @@
     <style>
         /* Basic A4 margins */
        /* =========================
-   GLOBAL DOCUMENT STYLE
-   ========================= */
+        GLOBAL DOCUMENT STYLE
+        ========================= */
         body {
             font-family: "Times New Roman", serif;
             font-size: 12pt;
@@ -155,6 +155,13 @@
     </style>
 </head>
 <body>
+<div class="cover">
+    <img src="{{ asset('images/asset_dokumen/cover_atas.png') }}" height=100% width=100% alt="Logo" />
+
+    <h1>{{ optional($document->judul)->judul ?? '—' }}</h1>
+</div>
+
+
     <div class="document-wrapper">
         <div class="doc-header">
             <h1>{{ optional($document->judul)->judul ?? '—' }}</h1>
