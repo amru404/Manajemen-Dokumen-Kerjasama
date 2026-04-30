@@ -245,6 +245,21 @@ class DocumentController extends Controller
     public function pdf($id)
     {
         $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
+        $coverAtasPath = public_path('images/asset_dokumen/cover_atas.png');
+        $coverBawahPath = public_path('images/asset_dokumen/cover_bawah.png');
+        $atasPath = public_path('images/asset_dokumen/atas.png');
+        $bawahPath = public_path('images/asset_dokumen/bawah.png');
+        $sampingPath = public_path('images/asset_dokumen/samping.png');
+        $logoPihak1 = $document->pihak1->logo;
+        $logoPihak2 = $document->pihak2->logo;
+        // dd($sampingPath, $coverAtasPath);
+
+        $coverAtas = 'data:image/png;base64,' . base64_encode(file_get_contents($coverAtasPath));
+        $coverBawah = 'data:image/png;base64,' . base64_encode(file_get_contents($coverBawahPath));
+        $atas = 'data:image/png;base64,' . base64_encode(file_get_contents($atasPath));
+        $bawah = 'data:image/png;base64,' . base64_encode(file_get_contents($bawahPath));
+        $samping = 'data:image/png;base64,' . base64_encode(file_get_contents($sampingPath));
+
 
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
             abort(403);
@@ -260,8 +275,9 @@ class DocumentController extends Controller
         }
 
         // Jika sumber adalah generate, generate PDF dari content_html
+        // dd($document->pihak1);
         if ($document->source === 'generate' && $document->content_html) {
-            $html = view('documents.pdf', compact('document'))->render();
+        $html = view('documents.pdf', compact('document','logoPihak1','logoPihak2','coverAtas','coverBawah','samping','atas','bawah'))->render();
 
             if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
                 $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html)

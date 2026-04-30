@@ -74,12 +74,12 @@
         'justify-start'">
         <a href="/">
             <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="dark:hidden ms-10" src="/images/logo/logo.png" alt="Logo" width="150" height="40" />
+                class="dark:hidden ms-10" src="/images/logo/LOGO_WECAN_TRANSPARANT.png" alt="Logo" width="150" height="40" />
             <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                class="hidden dark:block ms-10" src="/images/logo/logo.png" alt="Logo" width="150"
+                class="hidden dark:block ms-10" src="/images/logo/LOGO_WECAN_TRANSPARANT.png" alt="Logo" width="150"
                 height="40" />
             <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
-                src="/images/logo/logo.png" alt="Logo" width="50" height="50" />
+                src="/images/logo/LOGO_WECAN_TRANSPARANT.png" alt="Logo" width="50" height="50" />
 
         </a>
     </div>
