@@ -24,7 +24,7 @@
                             <td class="px-4 sm:px-6 py-3.5"><p class="text-gray-700 text-theme-sm">{{ $u->email }}</p></td>
                             <td class="px-4 sm:px-6 py-3.5"><p class="text-gray-700 text-theme-sm">{{ ucfirst($u->role) }}</p></td>
                             <td class="px-4 sm:px-6 py-3.5">
-                                <div class="flex items-center justify-center gap-2">
+                                <div class="flex  gap-2">
                                     <a href="{{ route('users.edit', $u) }}" class="text-gray-700 hover:text-green-500 text-lg" title="Edit">
                                        <i class="fa-regular fa-pen-to-square"></i>
                                     </a>

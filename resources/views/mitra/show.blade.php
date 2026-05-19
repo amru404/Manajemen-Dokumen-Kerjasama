@@ -62,7 +62,7 @@
                 <table id="tableKerjasama" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium dark:text-gray-200">List Kerjasama</h3>
-                    <a href="{{ route('mitra') }}" " class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
+                    <a href="{{ route('judul-kerjasama.create') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
                 </div>
                     <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-100 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>

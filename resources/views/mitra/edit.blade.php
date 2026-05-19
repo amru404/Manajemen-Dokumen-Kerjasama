@@ -4,7 +4,7 @@
 <x-common.page-breadcrumb pageTitle="Edit Data Mitra"/>
  <div class="space-y-6 md:space-y-7 mt-4">
     <x-common.component-card title="">
-        <form method="POST" action="{{ route('mitra.update', $mitra) }}">
+        <form method="POST" action="{{ route('mitra.update', $mitra) }}" enctype="multipart/form-data">
             @csrf @method('PUT')
 
             <div>
@@ -209,9 +209,6 @@
                                     .items
                                     .add(file);
                                 this.$refs.fileInput.files = dt.files;
-
-                                // 🔥 FIX: biar bisa pilih file yg sama lagi
-                                this.$refs.fileInput.value = '';
                             },
 
                             removeFile() {

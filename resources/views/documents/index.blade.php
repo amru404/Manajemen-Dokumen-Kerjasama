@@ -40,7 +40,7 @@
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $d->start_date ?? '—' }} - {{ $d->end_date ?? '—' }}</p>
                                 </td>
                                 
-                                 <td class="px-4 sm:px-6 py-3.5 text-center flex items-center justify-center">
+                                 <td class="px-4 sm:px-6 py-3.5">
                                     @if($documents_file)
                                         <a href="{{ route('documents.pdf', $documents_file->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open MoU"><i class="fa-solid fa-file-pdf ml-1"></i></a>
                                     @else

@@ -52,7 +52,6 @@ Route::middleware('role:admin,staff')->group(function () {
         Route::resource('templates', \App\Http\Controllers\TemplateController::class);
 
         // Documents indexes split by type (controller)
-        Route::get('/documents/mou', [\App\Http\Controllers\DocumentController::class, 'index'])->name('documents.MoU')->defaults('type', 'MoU')->defaults('slug', 'mou');
         Route::get('/documents/mou', [\App\Http\Controllers\DocumentController::class, 'index'])->name('documents.mou')->defaults('type', 'MoU')->defaults('slug', 'mou');
         Route::get('/documents/mou/create', [\App\Http\Controllers\DocumentController::class, 'create'])->name('documents.MoU.create')->defaults('type', 'MoU')->defaults('slug', 'mou');
 
@@ -72,6 +71,10 @@ Route::middleware('role:admin,staff')->group(function () {
 
         // PDF export
         Route::get('/documents/{id}/pdf', [DocumentController::class, 'pdf'])->name('documents.pdf');
+
+        // import
+        Route::get('/templatesl', [\App\Http\Controllers\DocumentController::class, 'formImport'])->name('templates.import');
+        Route::post('/templates/import-word', [DocumentController::class, 'importWord'])->name('templates.import-word');
     });
 
     // Admin-only routes

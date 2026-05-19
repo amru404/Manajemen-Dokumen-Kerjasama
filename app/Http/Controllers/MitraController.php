@@ -33,6 +33,8 @@ class MitraController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'penanggung_jawab' => 'required|string|max:255',

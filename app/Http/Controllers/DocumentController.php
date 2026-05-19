@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpWord\IOFactory;
+use App\Helpers\ReplaceHelper;
+
 
 class DocumentController extends Controller
 {
@@ -109,9 +112,9 @@ class DocumentController extends Controller
 
     public function store(Request $request)
     {
-        $mode = $request->input('mode', 'form'); // 'form' atau 'upload'
+        $mode = $request->input('mode', 'form');
 
-        // Validasi dasar
+        // Validasi
         $data = $request->validate([
             'mode' => 'required|in:form,upload',
             'template_id' => 'nullable|exists:templates,id',
@@ -148,12 +151,10 @@ class DocumentController extends Controller
 
         $data['user_id'] = Auth::id();
 
-        // Gunakan nomor document yang dikirim (dari frontend)
         $data['nomor_document'] = $request->input('nomor_document');
 
         $document = Document::create($data);
-
-        // determine redirect slug from selected template (if provided) or fallback to origin_slug
+        
         $slug = $request->input('origin_slug');
         if (!empty($data['template_id'])) {
             $tpl = Template::find($data['template_id']);
@@ -245,20 +246,24 @@ class DocumentController extends Controller
     public function pdf($id)
     {
         $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
-        $coverAtasPath = public_path('images/asset_dokumen/cover_atas.png');
-        $coverBawahPath = public_path('images/asset_dokumen/cover_bawah.png');
-        $atasPath = public_path('images/asset_dokumen/atas.png');
-        $bawahPath = public_path('images/asset_dokumen/bawah.png');
-        $sampingPath = public_path('images/asset_dokumen/samping.png');
-        $logoPihak1 = $document->pihak1->logo;
-        $logoPihak2 = $document->pihak2->logo;
-        // dd($sampingPath, $coverAtasPath);
+        // dd( $document->pihak1->no_telp);
+         $template = $document->content_html;
 
-        $coverAtas = 'data:image/png;base64,' . base64_encode(file_get_contents($coverAtasPath));
-        $coverBawah = 'data:image/png;base64,' . base64_encode(file_get_contents($coverBawahPath));
-        $atas = 'data:image/png;base64,' . base64_encode(file_get_contents($atasPath));
-        $bawah = 'data:image/png;base64,' . base64_encode(file_get_contents($bawahPath));
-        $samping = 'data:image/png;base64,' . base64_encode(file_get_contents($sampingPath));
+        //replace placeholder
+        $htmlTemplate = ReplaceHelper::parse($template, $document);
+     
+        // parsing img
+        $images = collect([
+            'coverAtas'  => public_path('images/asset_dokumen/cover_atas.png'),
+            'coverBawah' => public_path('images/asset_dokumen/cover_bawah.png'),
+            'atas'       => public_path('images/asset_dokumen/atas.png'),
+            'bawah'      => public_path('images/asset_dokumen/bawah.png'),
+            'samping'    => public_path('images/asset_dokumen/samping.png'),
+            'logoPihak1' => $document->pihak1->logo ? storage_path('app/public/' . $document->pihak1->logo) : null,
+            'logoPihak2' => $document->pihak2->logo ? storage_path('app/public/' . $document->pihak2->logo) : null,
+        ])->map(fn($path) =>
+            'data:image/png;base64,' . base64_encode(file_get_contents($path))
+        );
 
 
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
@@ -274,10 +279,10 @@ class DocumentController extends Controller
             abort(404, 'File tidak ditemukan');
         }
 
+        // dd($htmlTemplate);
         // Jika sumber adalah generate, generate PDF dari content_html
-        // dd($document->pihak1);
         if ($document->source === 'generate' && $document->content_html) {
-        $html = view('documents.pdf', compact('document','logoPihak1','logoPihak2','coverAtas','coverBawah','samping','atas','bawah'))->render();
+        $html = view('documents.pdf', compact('document','images','htmlTemplate'))->render();
 
             if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
                 $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html)
@@ -302,4 +307,5 @@ class DocumentController extends Controller
 
         abort(400, 'Tidak ada konten atau file untuk ditampilkan');
     }
+
 }

@@ -46,7 +46,7 @@
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $kj->mitra ? $kj->mitra->nama : '-' }}</p>
                                 </td>
 
-                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                <td class="px-4 sm:px-6 py-3.5 ">
                                     @php
                                         $mou = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'MoU');
                                     @endphp
@@ -57,7 +57,7 @@
                                     @endif
                                 </td>
 
-                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                <td class="px-4 sm:px-6 py-3.5 ">
                                     @php
                                         $pks = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'PKS');
                                     @endphp
@@ -68,7 +68,7 @@
                                     @endif
                                 </td>
 
-                                <td class="px-4 sm:px-6 py-3.5 text-center">
+                                <td class="px-4 sm:px-6 py-3.5 ">
                                     @php
                                         $ba = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'Berita Acara');
                                     @endphp

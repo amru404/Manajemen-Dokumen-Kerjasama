@@ -18,7 +18,7 @@
                         @endif">{{ ucfirst($document->status) }}</span>
                 </p>
                 <p class="text-sm text-gray-500">Nomor Dokumen: {{ $document->nomor_document ?? '—' }}</p>
-                <p class="text-sm text-gray-500">Sumber: {{ $document->source === 'generate' ? '📝 Dibuat dari Form' : '📄 Upload File' }}</p>
+                <p class="text-sm text-gray-500">Sumber: {{ $document->source === 'generate' ? '📝 Dibuat dari Form' : ' Upload File' }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

@@ -186,7 +186,7 @@
                                                 @error('pdf_file')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                                 @enderror
-                                                <p class="text-xs text-gray-500 mt-1">📋 Hanya file PDF yang diterima (max 10MB)</p>
+                                                <p class="text-xs text-gray-500 mt-1">Hanya file PDF yang diterima (max 10MB)</p>
                                             </div>
                                         </div>
 
@@ -195,7 +195,7 @@
                                             <button
                                                 type="submit"
                                                 class="bg-indigo-500 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
-                                                💾 Simpan Dokumen
+                                                Save
                                             </button>
                                             <a
                                                 href="#"
@@ -209,7 +209,10 @@
                             </div>
                         </div>
 
-                        <script>
+                        <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+                        
+
+                        <script> 
                             function documentForm() {
                                 return {
                                     activeTab: 'form',
@@ -218,6 +221,11 @@
                                     nomorDocument: '',
 
                                     onSubmit(e) {
+                                        // Sinkronisasi: jika CKEditor aktif, ambil data darinya ke Alpine model
+                                        if (window.editorInstance && typeof window.editorInstance.getData === 'function') {
+                                            this.formContent = window.editorInstance.getData();
+                                        }
+
                                         // Validasi: minimal salah satu terisi
                                         if (this.activeTab === 'form' && !this.formContent.trim()) {
                                             e.preventDefault();
@@ -261,7 +269,7 @@
                             // Initialize CKEditor untuk textarea jika dibutuhkan
                             document.addEventListener('DOMContentLoaded', function () {
                                 const templates = @json(
-                                    $templates -> mapWithKeys(fn($t) => [$t -> id => $t -> content_html])
+                                    $templates->mapWithKeys(fn($t) => [$t->id => $t->content_html])
                                 );
 
                                 const templateSelect = document.getElementById('template_select');
@@ -270,8 +278,21 @@
                                 if (templateSelect) {
                                     templateSelect.addEventListener('change', function () {
                                         if (this.value && templates[this.value]) {
-                                            contentArea.value = templates[this.value];
-                                            contentArea.dispatchEvent(new Event('change', {bubbles: true}));
+                                            const tpl = templates[this.value];
+                                            // If CKEditor is initialized, update its data. Otherwise update the textarea.
+                                            if (window.editorInstance && typeof window.editorInstance.setData === 'function') {
+                                                window.editorInstance.setData(tpl);
+                                            } else {
+                                                contentArea.value = tpl;
+                                                // dispatch input so Alpine x-model updates
+                                                contentArea.dispatchEvent(new Event('input', {bubbles: true}));
+                                            }
+
+                                            // Also update Alpine model directly if present so validation sees it immediately
+                                            const alpineRoot = document.querySelector('[x-data]');
+                                            if (alpineRoot && alpineRoot.__x && alpineRoot.__x.$data) {
+                                                alpineRoot.__x.$data.formContent = tpl;
+                                            }
                                         }
                                     });
                                 }
@@ -284,4 +305,104 @@
                             }
                         </style>
 
+                        <script>
+                            ClassicEditor.create(document.querySelector('#document_content'), {
+                                htmlSupport: {
+                                    allow: [
+                                        {
+                                            name: /.*/,
+                                            styles: true,
+                                            attributes: true,
+                                            classes: true
+                                        }
+                                    ]
+                                },
+                            pasteFromOffice: {
+                                    keepFormatting: true
+                                },
+                                toolbar: {
+                                    items: [
+                                        'heading',
+
+                                        '|',
+                                        'bold', 'italic', 'underline', 'strikethrough',
+                                        'subscript', 'superscript',
+
+                                        '|',
+                                        'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+
+                                        '|',
+                                        'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
+
+                                        '|',
+                                        'bulletedList', 'numberedList', 'todoList',
+
+                                        '|',
+                                        'outdent', 'indent',
+
+                                        '|',
+                                        'link', 'blockQuote',
+
+                                        '|',
+                                        'insertTable',
+
+                                        '|',
+                                        'horizontalLine', 'specialCharacters',
+
+                                        '|',
+                                        'undo', 'redo'
+                                    ],
+                                    shouldNotGroupWhenFull: true
+                                },
+
+                                alignment: {
+                                    options: ['left', 'center', 'right', 'justify']
+                                },
+
+                                fontFamily: {
+                                    options: [
+                                        'default',
+                                        'Arial, Helvetica, sans-serif',
+                                        'Times New Roman, Times, serif',
+                                        'Calibri, sans-serif',
+                                        'Georgia, serif',
+                                        'Courier New, Courier, monospace'
+                                    ],
+                                    supportAllValues: true
+                                },
+
+                                fontSize: {
+                                    options: [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32],
+                                    supportAllValues: true
+                                },
+
+                                table: {
+                                    contentToolbar: [
+                                        'tableColumn',
+                                        'tableRow',
+                                        'mergeTableCells',
+                                        'tableCellProperties',
+                                        'tableProperties'
+                                    ]
+                                },
+
+                                htmlSupport: {
+                                    allow: [
+                                        {
+                                            name: /.*/,
+                                            attributes: true,
+                                            classes: true,
+                                            styles: true
+                                        }
+                                    ]
+                                }
+                            })
+                            .then(editor => {
+                                // expose editor instance so external scripts can update its data
+                                window.editorInstance = editor;
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        </script>
                         @endsection

@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Template Format</label>
+                    <label class="block text-sm font-medium text-gray-700">Isi Dokumen</label>
                     <textarea id="document_content" name="content_html" class="mt-1 block w-full rounded-md border px-3 py-2" rows="12">{{ old('content_html', $document->content_html) }}</textarea>
                     @error('content_html') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -76,29 +76,14 @@
         </div>
     </div>
 
+    
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+    
     <script>
         const _templates = @json($templates->mapWithKeys(fn($t) => [$t->id => $t->content_html]));
 
-        document.addEventListener('DOMContentLoaded', function () {
-            function initEditor() {
-                var ta = document.querySelector('#document_content');
-                if (!ta) return;
-
-                if (typeof CKEDITOR !== 'undefined') {
-                    try {
-                        if (CKEDITOR.instances['document_content']) CKEDITOR.instances['document_content'].destroy(true);
-                        CKEDITOR.replace('document_content', { height: 500, extraPlugins: 'colorbutton,font,justify,pastefromword,table,tableresize', toolbar: [ { name: 'clipboard', items: ['Undo','Redo','-','PasteFromWord','PasteText','-','Cut','Copy'] }, { name: 'styles', items: ['Format','Font','FontSize'] }, { name: 'basicstyles', items: ['Bold','Italic','Underline','Strike','Subscript','Superscript','RemoveFormat'] }, { name: 'colors', items: ['TextColor','BGColor'] }, { name: 'paragraph', items: ['NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] }, { name: 'links', items: ['Link','Unlink','Anchor'] }, { name: 'insert', items: ['Image','Table','HorizontalRule','SpecialChar'] }, { name: 'tools', items: ['Maximize','ShowBlocks'] }, { name: 'editing', items: ['Scayt'] } ], allowedContent: true });
-                    } catch (e) { console.error(e); }
-                } else {
-                    var s = document.createElement('script');
-                    s.src = 'https://cdn.ckeditor.com/4.25.1-lts/full-all/ckeditor.js';
-                    s.onload = initEditor;
-                    document.head.appendChild(s);
-                }
-            }
-
             initEditor();
-
+            
             const select = document.querySelector('#template_select');
             if (select) {
                 select.addEventListener('change', function () {
@@ -114,4 +99,104 @@
         });
     </script>
 
+<script>
+    ClassicEditor.create(document.querySelector('#document_content'), {
+        htmlSupport: {
+        allow: [
+            {
+                name: /.*/,
+                styles: true,
+                attributes: true,
+                classes: true
+            }
+        ]
+    },
+    pasteFromOffice: {
+        keepFormatting: true
+    },
+    toolbar: {
+        items: [
+            'heading',
+            
+            '|',
+            'bold', 'italic', 'underline', 'strikethrough',
+            'subscript', 'superscript',
+            
+            '|',
+            'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+            
+            '|',
+            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
+            
+            '|',
+            'bulletedList', 'numberedList', 'todoList',
+            
+            '|',
+            'outdent', 'indent',
+            
+            '|',
+            'link', 'blockQuote',
+            
+            '|',
+            'insertTable',
+            
+            '|',
+            'horizontalLine', 'specialCharacters',
+            
+            '|',
+            'undo', 'redo'
+        ],
+        shouldNotGroupWhenFull: true
+    },
+    
+    alignment: {
+        options: ['left', 'center', 'right', 'justify']
+    },
+    
+    fontFamily: {
+        options: [
+            'default',
+            'Arial, Helvetica, sans-serif',
+            'Times New Roman, Times, serif',
+            'Calibri, sans-serif',
+            'Georgia, serif',
+            'Courier New, Courier, monospace'
+        ],
+        supportAllValues: true
+    },
+    
+    fontSize: {
+        options: [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32],
+        supportAllValues: true
+    },
+    
+    table: {
+        contentToolbar: [
+            'tableColumn',
+            'tableRow',
+            'mergeTableCells',
+            'tableCellProperties',
+            'tableProperties'
+        ]
+    },
+    
+    htmlSupport: {
+        allow: [
+            {
+                name: /.*/,
+                attributes: true,
+                classes: true,
+                styles: true
+            }
+        ]
+    }
+})
+.then(editor => {
+    // expose editor instance so external scripts can update its data
+    window.editorInstance = editor;
+})
+.catch(error => {
+    console.error(error);
+});
+</script>
 @endsection

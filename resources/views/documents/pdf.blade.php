@@ -8,13 +8,30 @@
             {{$document->mitra}}</title>
 
         <style>
+            .document-body p{
+                margin:0 0 6px !important;
+            }
+
+            .document-body ul{
+                margin-top:0 !important;
+                margin-bottom:6px !important;
+            }
+
+            .document-body li p{
+                margin:0 !important;
+            }
+
+            .document-body p:empty{
+                display:none !important;
+            }
             
             body {
                 font-family: "Times New Roman", serif;
-                font-size: 12pt;
-                line-height: 1.6;
+                font-size: 14pt;
+                line-height: 1.2;
                 color: #000;
                 text-align: justify;
+                padding-top: 95px;
             }
 
             
@@ -22,7 +39,7 @@
                 font-size: 21pt;
                 font-weight: bold;
                 text-align: center;
-                margin-bottom: 20px;
+                margin-bottom: 10px;
                 text-transform: uppercase;
             }
 
@@ -49,7 +66,7 @@
 
             
             ol {
-                margin-left: 20px;
+                margin-left: -10px;
                 margin-bottom: 12px;
             }
 
@@ -57,9 +74,32 @@
                 margin-bottom: 6px;
             }
 
+           ol {
+                list-style-type: decimal !important;
+                list-style: decimal outside !important;
+                padding-left: 20px;
+                margin: 0 0 12px 0;
+            }
+
             ul {
-                margin-left: 20px;
-                margin-bottom: 12px;
+                list-style-type: disc !important;
+                list-style: disc outside !important;
+                padding-left: 20px;
+                margin: 0 0 12px 0;
+            }
+
+            ol[type="a"],
+            ol[type="A"] {
+                list-style-type: lower-alpha !important;
+            }
+
+            ol[type="1"] {
+                list-style-type: decimal !important;
+            }
+
+            li {
+                display: list-item !important;
+                margin-bottom: 6px;
             }
 
             ul li {
@@ -135,7 +175,7 @@
             }
             .cover-sidebar-mask{
                 position: absolute;
-                top: 100;
+                top: 10;
                 left: -63px;
                 width: 90px;
                 height: 700px;
@@ -162,14 +202,15 @@
             
             .desc{
                 color: #2f6e85; 
-                margin-left: -20px;
+                margin-left: -67px;
                 margin-top:60px;
                 padding: 0 -20px;
                 text-transform: none;
                 text-align: justify; 
-                font-size: 22px; 
+                font-size: 25px; 
                 font-weight:500; 
                 line-height: 1.5;
+                width: 650px;
             }
             
             .atas{
@@ -201,9 +242,10 @@
             }
 
             .document-wrapper{
-                padding: 50px;
-                margin-top: 60px;
-                padding-bottom:50px
+                padding: 0px 60px 60px 60px;
+                margin-top: -20px;
+                overflow-wrap: break-word;
+                word-break: break-word;
             }
 
              .doc-header h1{
@@ -213,13 +255,28 @@
                 margin-bottom: 20px;
                 text-transform: uppercase;
             }
+
+            .document-body > *:first-child{
+                margin-top:0 !important;
+                padding-top:0 !important;
+            }
+            .document-body{
+                width: 100%;
+            }
+
+            .ttd{
+                max-width: 180px;   
+                max-height: 80px;
+                object-fit: contain;
+                margin: 10px 0;
+            }
             /* Avoid flex, grid, absolute positioning */
         </style>
     </head>
     <body>
         <div class="cover">
             <div class="cover-sidebar-mask"></div>
-            <img class="coveratas" src="{{ $coverAtas }}" alt="Logo"/>
+            <img class="coveratas" src="{{ $images['coverAtas'] }}" alt="Logo"/>
             <h1 style="margin-top:80px; white-space: nowrap;">
                 {{$document->template->document_type ?? '—'}} 
                 <br>
@@ -246,19 +303,20 @@
                 Influencer Marketing, Media Printing.
             </div>
             
-            <img class="coverbawah" src="{{ $coverBawah }}"alt="Logo"/>
+            <img class="coverbawah" src="{{ $images['coverBawah'] }}"alt="Logo"/>
         </div>
+        
+        
+        <img class="atas" src="{{$images['atas']}}"alt="Logo"/>
+        <img class="samping" src="{{ $images['samping'] }}"alt="Logo"/>
+        <img class="bawah" src="{{ $images['bawah'] }}"alt="Logo"/>
+        
+        <div class="page-break"></div>
 
-
-            <img class="atas" src="{{$atas}}"alt="Logo"/>
-            <img class="samping" src="{{ $samping }}"alt="Logo"/>
-            <img class="bawah" src="{{ $bawah }}"alt="Logo"/>
-
-
-        <div class="document-wrapper" style="margin-top: 60px; padding-top: 50px;">
-             <div class="doc-header
+        <div class="document-wrapper">
+             <div class="doc-header">
             <div class="document-body">
-                {!! $document->content_html !!}
+                {!! $htmlTemplate !!}
             </div>
 
             
@@ -268,7 +326,7 @@
                     <div
                         style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
                         <div class="muted">Pihak Pertama</div>
-                        <div style="height:60px;"></div>
+                        <img  class="ttd" src="{{ $images['logoPihak1'] }}" alt="ttd" srcset="">
                         <div>
                             <strong>{{ optional($document->pihak1)->nama ?? '—' }}</strong>
                         </div>
@@ -277,7 +335,7 @@
                     <div
                         style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
                         <div class="muted">Pihak Kedua</div>
-                        <div style="height:60px;"></div>
+                        <img class="ttd"  src="{{ $images['logoPihak2'] }}" alt="ttd" srcset="">
                         <div>
                             <strong>{{ optional($document->pihak2)->nama ?? '—' }}</strong>
                         </div>

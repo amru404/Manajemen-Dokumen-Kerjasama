@@ -45,9 +45,23 @@
         </div>
     </div>
 
+    
     <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
     <script>
         ClassicEditor.create(document.querySelector('#template_format'), {
+            htmlSupport: {
+                allow: [
+                    {
+                        name: /.*/,
+                        styles: true,
+                        attributes: true,
+                        classes: true
+                    }
+                ]
+            },
+           pasteFromOffice: {
+                keepFormatting: true
+            },
             toolbar: {
                 items: [
                     'heading',
