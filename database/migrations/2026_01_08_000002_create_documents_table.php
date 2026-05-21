@@ -24,7 +24,7 @@ class CreateDocumentsTable extends Migration
             $table->longText('content_html')->nullable();
             $table->string('file_path')->nullable();
             $table->enum('source', ['generate', 'upload'])->default('generate');
-            $table->enum('status', ['draft', 'final', 'published'])->default('draft');
+            $table->enum('status', ['denied','draft', 'final', 'published'])->default('draft');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

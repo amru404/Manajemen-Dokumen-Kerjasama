@@ -18,7 +18,7 @@
                         @endif">{{ ucfirst($document->status) }}</span>
                 </p>
                 <p class="text-sm text-gray-500">Nomor Dokumen: {{ $document->nomor_document ?? '—' }}</p>
-                <p class="text-sm text-gray-500">Sumber: {{ $document->source === 'generate' ? '📝 Dibuat dari Form' : ' Upload File' }}</p>
+                <p class="text-sm text-gray-500">Sumber: {{ $document->source === 'generate' ? 'Dibuat dari Form' : ' Upload File' }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -52,35 +52,12 @@
                     <p class="text-gray-700">{{ $document->end_date ? \Carbon\Carbon::parse($document->end_date)->format('d M Y') : '—' }}</p>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="flex gap-3 mb-6">
-                <a href="{{ route('documents.pdf', $document->id) }}"
-                   target="_blank"
-                   class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                    📄 Lihat PDF
-                </a>
-                <a href="{{ route('documents.edit', $document->id) }}"
-                   class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                    ✏️ Edit
-                </a>
-                <form action="{{ route('documents.destroy', $document->id) }}"
-                      method="POST"
-                      class="inline"
-                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                        🗑️ Hapus
-                    </button>
-                </form>
             </div>
         </div>
 
         <!-- Document Preview -->
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
-            <h4 class="text-lg font-semibold mb-4">📋 Preview Dokumen</h4>
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03] mt-3">
+            <h4 class="text-lg font-semibold mb-4">Preview Dokumen</h4>
 
             @if($document->source === 'generate' && $document->content_html)
                 <!-- Preview untuk dokumen yang dibuat dari form -->

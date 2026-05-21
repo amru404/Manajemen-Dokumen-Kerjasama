@@ -131,6 +131,49 @@ class MitraController extends Controller
      */
     public function destroy(Mitra $mitra)
     {
-        //
+        $mitra->delete();
+
+        return redirect()->route('mitra')->with('success', 'Data mitra berhasil dihapus.');
+    }
+
+    /**
+     * Display a listing of soft deleted resources.
+     */
+    public function trashed()
+    {
+        $mitra = Mitra::onlyTrashed()->select('id','nama','penanggung_jawab','jabatan','alamat','no_telp','email','logo','tanda_tangan','deleted_at')->get();
+
+        return view('mitra.trashed', compact('mitra'));
+    }
+
+    /**
+     * Restore a soft deleted resource.
+     */
+    public function restore($id)
+    {
+        $mitra = Mitra::onlyTrashed()->findOrFail($id);
+        $mitra->restore();
+
+        return redirect()->route('mitra.trashed')->with('success', 'Data mitra berhasil dipulihkan.');
+    }
+
+    /**
+     * Permanently delete a soft deleted resource.
+     */
+    public function forceDelete($id)
+    {
+        $mitra = Mitra::onlyTrashed()->findOrFail($id);
+
+        if ($mitra->logo) {
+            Storage::disk('public')->delete($mitra->logo);
+        }
+
+        if ($mitra->tanda_tangan) {
+            Storage::disk('public')->delete($mitra->tanda_tangan);
+        }
+
+        $mitra->forceDelete();
+
+        return redirect()->route('mitra.trashed')->with('success', 'Data mitra berhasil dihapus permanen.');
     }
 }

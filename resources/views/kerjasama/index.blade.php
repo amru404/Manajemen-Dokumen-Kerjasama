@@ -80,11 +80,11 @@
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ route('judul-kerjasama.show', $kj) }}" class="text-gray-700 hover:text-indigo-500" title="Lihat detail">
-                                            <svg class="inline h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <a href="{{ route('judul-kerjasama.show', $kj) }}" class="text-gray-700 hover:text-indigo-500 text-sm" title="Lihat detail">
+                                            <svg class="inline h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         </a>
 
-                                        <a href="{{ route('judul-kerjasama.edit', $kj) }}" class="text-gray-700 hover:text-green-500 text-lg    " title="Edit">
+                                        <a href="{{ route('judul-kerjasama.edit', $kj) }}" class="text-gray-700 hover:text-green-500 text-sm" title="Edit">
                                                 <i class="fa-regular fa-pen-to-square"></i>
                                         </a>
 
@@ -92,7 +92,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-gray-700 hover:text-red-500" title="Hapus">
-                                                <svg class="inline h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16"/></svg>
+                                                <svg class="inline h-5 w-5 text-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0V5a2 2 0 00-2-2h-3.5"/></svg>
                                             </button>
                                         </form>
                                     </div>

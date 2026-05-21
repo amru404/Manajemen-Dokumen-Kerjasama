@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Judul_Kerjasama as Kerjasama;
 use App\Models\Mitra;
 use Illuminate\Http\Request;
+use App\Models\Document;
+use App\Models\Template;
 
 class JudulKerjasamaController extends Controller
 {
@@ -48,7 +50,11 @@ class JudulKerjasamaController extends Controller
      */
     public function show(Kerjasama $judul_kerjasama)
     {
-        return view('kerjasama.detail', compact('judul_kerjasama'));
+        $documents = Document::with(['template','pihak1','pihak2'])
+        ->where('judul_id', $judul_kerjasama->id)
+        ->latest()
+        ->paginate(10); 
+        return view('kerjasama.detail', compact('judul_kerjasama', 'documents'));
     }
 
     /**

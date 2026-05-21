@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mitra extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'mitras';
 
     protected $fillable = [
@@ -33,4 +36,18 @@ class Mitra extends Model
         return $this->hasMany(Pihak_Bersangkutan::class, 'mitra_id');
     }
 
+    public function documentsAsPihak1(): HasMany
+    {
+        return $this->hasMany(Document::class, 'pihak_1_id');
+    }
+
+    public function documentsAsPihak2(): HasMany
+    {
+        return $this->hasMany(Document::class, 'pihak_2_id');
+    }
+
+    public function hasDocumentRelations(): bool
+    {
+        return $this->documentsAsPihak1()->exists() || $this->documentsAsPihak2()->exists();
+    }
 }

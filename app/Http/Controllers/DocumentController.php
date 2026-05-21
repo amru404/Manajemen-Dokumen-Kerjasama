@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use PhpOffice\PhpWord\IOFactory;
 use App\Helpers\ReplaceHelper;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendEmail; 
 
 
 class DocumentController extends Controller
@@ -83,7 +85,7 @@ class DocumentController extends Controller
     {
         $type = $this->slugToType($slug);
 
-        $query = Document::whereHas('template', function ($q) use ($type) {
+        $query = Document::with(['pihak1', 'pihak2'])->whereHas('template', function ($q) use ($type) {
             $q->where('document_type', $type);
         });
 
@@ -93,8 +95,10 @@ class DocumentController extends Controller
 
         $documents = $query->latest()->paginate(10);
         $documents_file = $documents->first();
-
-        return view('documents.index', compact('documents', 'type', 'slug','documents_file'));
+        $pihak1 = optional($documents_file)->pihak1 ?? '—';
+        $pihak2 = optional($documents_file)->pihak2 ?? '—';
+        // dd($pihak1, $pihak2);
+        return view('documents.index', compact('documents', 'type', 'slug','documents_file', 'pihak1', 'pihak2'));
     }
 
 
@@ -238,13 +242,14 @@ class DocumentController extends Controller
     }
 
     /**
-     * Generate PDF for a document using dompdf
-     * Bisa dari content_html (generate) atau file_path (upload)
-     *
      * @param  string  $id
      */
     public function pdf($id)
     {
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
         // dd( $document->pihak1->no_telp);
          $template = $document->content_html;
@@ -265,10 +270,6 @@ class DocumentController extends Controller
             'data:image/png;base64,' . base64_encode(file_get_contents($path))
         );
 
-
-        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
-            abort(403);
-        }
 
         // Jika sumber adalah upload, stream file dari storage
         if ($document->source === 'upload' && $document->file_path) {
@@ -308,4 +309,71 @@ class DocumentController extends Controller
         abort(400, 'Tidak ada konten atau file untuk ditampilkan');
     }
 
+
+
+
+
+    // Pengajuan Dokumen
+    public function PengajuanDokumen()
+    {
+        $documents = Document::with(['judul', 'template'])
+            ->where('status', 'draft')
+            ->when(auth()->check() && auth()->user()->role === 'staff', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('documents.pengajuan', compact('documents'));
+    }
+
+    function StatusDokumen(request $request,$id)
+    {
+        $document = Document::findOrFail($id);
+
+        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
+            abort(403);
+        } elseif (auth()->check() && auth()->user()->role === 'admin') {
+            $request->validate([
+                'status' => 'required|in:denied,draft,final,published',
+            ]);
+
+            $document->status = $request->input('status');
+            $document->save();
+
+            return redirect()->route('documents.pengajuan-dokumen')->with('success', 'Status dokumen updated.');
+        }
+
+        return view('documents.status', compact('document'));
+        
+    }
+
+
+
+
+    // kirim email
+    function sendEmail($id) {
+        
+        $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
+        // dd( $document->pihak1->no_telp);
+         $template = $document->content_html;
+
+        //replace placeholder
+        $htmlTemplate = ReplaceHelper::parse($template, $document);
+     
+        // parsing img
+        $images = collect([
+            'coverAtas'  => public_path('images/asset_dokumen/cover_atas.png'),
+            'coverBawah' => public_path('images/asset_dokumen/cover_bawah.png'),
+            'atas'       => public_path('images/asset_dokumen/atas.png'),
+            'bawah'      => public_path('images/asset_dokumen/bawah.png'),
+            'samping'    => public_path('images/asset_dokumen/samping.png'),
+            'logoPihak1' => $document->pihak1->logo ? storage_path('app/public/' . $document->pihak1->logo) : null,
+            'logoPihak2' => $document->pihak2->logo ? storage_path('app/public/' . $document->pihak2->logo) : null,
+        ])->map(fn($path) =>
+            'data:image/png;base64,' . base64_encode(file_get_contents($path))
+        );
+
+
+    }
 }

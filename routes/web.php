@@ -34,6 +34,9 @@ Route::middleware('role:admin,staff')->group(function () {
         Route::get('/mitra', [MitraController::class, 'index'])->name('mitra');
         Route::get('/mitra/create', [MitraController::class, 'create'])->name('mitra.create');
         Route::post('/mitra', [MitraController::class, 'store'])->name('mitra.store');
+        Route::get('/mitra/trashed', [MitraController::class, 'trashed'])->name('mitra.trashed');
+        Route::put('/mitra/{mitra}/restore', [MitraController::class, 'restore'])->name('mitra.restore');
+        Route::delete('/mitra/{mitra}/force-delete', [MitraController::class, 'forceDelete'])->name('mitra.force-delete');
         Route::get('/mitra/{mitra}', [MitraController::class, 'show'])->name('mitra.show');
         Route::get('/mitra/{mitra}/edit', [MitraController::class, 'edit'])->name('mitra.edit');
         Route::put('/mitra/{mitra}', [MitraController::class, 'update'])->name('mitra.update');
@@ -85,6 +88,11 @@ Route::middleware('role:admin,staff')->group(function () {
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+
+        Route::get('/pengajuan-dokumen', [\App\Http\Controllers\DocumentController::class, 'PengajuanDokumen'])->name('documents.pengajuan-dokumen');
+        Route::put('/documents/{id}/status', [\App\Http\Controllers\DocumentController::class, 'StatusDokumen'])->name('documents.status');
+
     });
 
 });

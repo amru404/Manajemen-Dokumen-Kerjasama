@@ -26,13 +26,13 @@
                             <td class="px-4 sm:px-6 py-3.5">
                                 <div class="flex  gap-2">
                                     <a href="{{ route('users.edit', $u) }}" class="text-gray-700 hover:text-green-500 text-lg" title="Edit">
-                                       <i class="fa-regular fa-pen-to-square"></i>
+                                       <i class="fa-regular fa-pen-to-square text-sm"></i>
                                     </a>
                                     <form method="POST" action="{{ route('users.destroy', $u) }}" onsubmit="return confirm('Hapus user ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-gray-700 hover:text-red-500" title="Hapus">
-                                            <svg class="inline h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16"/></svg>
+                                            <svg class="inline h-5 w-5 mt-1 text-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0V5a2 2 0 00-2-2h-3.5"/></svg>
                                         </button>
                                     </form>
                                 </div>

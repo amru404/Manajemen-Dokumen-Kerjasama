@@ -118,13 +118,14 @@
                             </p>
                         </td>
                         <td class="py-3 whitespace-nowrap">
-                            <span class=" text-sm p-1 {{ $document->status == 'published' ? 'bg-green-100 text-green-800' : ($document->status =='final' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800')}}">
+                            <span class=" text-sm px-2 py-1 rounded text-xs font-semibold {{ $document->status == 'published' ? 'bg-green-100 text-green-800' : ($document->status =='final' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800')}}">
                                 @if(isset($document->status))
                                     {{ $document->status }}
                                 @else
                                     {{ $document['status'] ?? 'Aktif' }}
                                 @endif
                             </span>
+                             
                         </td>
                     </tr>
                 @endforeach
