@@ -92,6 +92,7 @@ Route::middleware('role:admin,staff')->group(function () {
 
         Route::get('/pengajuan-dokumen', [\App\Http\Controllers\DocumentController::class, 'PengajuanDokumen'])->name('documents.pengajuan-dokumen');
         Route::put('/documents/{id}/status', [\App\Http\Controllers\DocumentController::class, 'StatusDokumen'])->name('documents.status');
+        Route::get('/documents/{id}/send-email', [\App\Http\Controllers\DocumentController::class, 'sendEmail'])->name('documents.send-email');
 
     });
 

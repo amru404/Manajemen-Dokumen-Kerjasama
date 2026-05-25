@@ -349,31 +349,74 @@ class DocumentController extends Controller
     }
 
 
-
-
     // kirim email
-    function sendEmail($id) {
-        
-        $document = Document::with(['judul','template','user','pihak1','pihak2'])->findOrFail($id);
-        // dd( $document->pihak1->no_telp);
-         $template = $document->content_html;
+   public function sendEmail($id)
+    {
+    //    dd(config('mail.from.address'));
+        $document = Document::with([
+            'judul',
+            'template',
+            'user',
+            'pihak1',
+            'pihak2'
+        ])->findOrFail($id);
 
-        //replace placeholder
-        $htmlTemplate = ReplaceHelper::parse($template, $document);
-     
-        // parsing img
-        $images = collect([
-            'coverAtas'  => public_path('images/asset_dokumen/cover_atas.png'),
-            'coverBawah' => public_path('images/asset_dokumen/cover_bawah.png'),
-            'atas'       => public_path('images/asset_dokumen/atas.png'),
-            'bawah'      => public_path('images/asset_dokumen/bawah.png'),
-            'samping'    => public_path('images/asset_dokumen/samping.png'),
-            'logoPihak1' => $document->pihak1->logo ? storage_path('app/public/' . $document->pihak1->logo) : null,
-            'logoPihak2' => $document->pihak2->logo ? storage_path('app/public/' . $document->pihak2->logo) : null,
-        ])->map(fn($path) =>
-            'data:image/png;base64,' . base64_encode(file_get_contents($path))
-        );
+        // Authorization
+        if (
+            auth()->check() &&
+            auth()->user()->role === 'staff' &&
+            $document->user_id !== auth()->id()
+        ) {
+            abort(403);
+        }
 
+        // Ambil recipient
+        $recipient = $document->pihak1->email
+            ?? $document->pihak2->email
+            ?? config('mail.from.address');
 
+        if (!$recipient) {
+            return redirect()
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
+                ->with(
+                    'error',
+                    'No recipient email available for this document.'
+                );
+        }
+
+        try {
+
+            // kirim email
+            Mail::to('amruazzamm@gmail.com')
+                ->send(new SendEmail($document));
+                // dd($document);
+            $document->status = 'published';
+            $document->save();
+
+            
+            return redirect()
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
+                ->with(
+                    'success',
+                    'Email sent successfully to ' . $recipient . '.'
+                );
+
+        } catch (\Exception $e) {
+
+            \Log::error(
+                'Gagal mengirim email document ID ' .
+                $document->id .
+                ': ' . $e->getMessage()
+            );
+                dd(config('mail.mailers.smtp'));
+
+            return redirect()
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
+                ->with(
+                    'error',
+                    'Failed to send email.'
+                );
+
+        }
     }
 }

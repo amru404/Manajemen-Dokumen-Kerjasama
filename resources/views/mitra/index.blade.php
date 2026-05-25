@@ -49,7 +49,7 @@
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->jabatan }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->alamat }}</p>
+                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->email }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->no_telp }}</p>

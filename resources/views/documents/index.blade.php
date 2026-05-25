@@ -18,6 +18,7 @@
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Start</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">End</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Document</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Send Email</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Status</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Action</th>
                         </tr>
@@ -51,9 +52,14 @@
                                         <span class="text-gray-500">—</span>
                                     @endif
                                 </td>
-                                 <td class="px-4 sm:px-6 py-3.5">
+                                <td class="px-4 sm:px-6 py-3.5">
+                                    <a href="{{ route('documents.send-email', $d->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Send Email"><i class="fa-solid fa-paper-plane ml-1"></i></a>
+                                </td>
+
+                                <td class="px-4 sm:px-6 py-3.5 text-center">
                                     <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $d->status == 'published' ? 'bg-green-100 text-green-800' : ($d->status=='final' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">{{ $d->status }}</span>
                                 </td>
+                              
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center gap-2">
                                         <a href="{{ route('documents.show', $d->id) }}" class="flex justify-center text-gray-700 size-5 hover:text-indigo-500" title="View">
