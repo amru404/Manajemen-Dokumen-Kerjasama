@@ -371,7 +371,7 @@ class DocumentController extends Controller
         }
 
         // Ambil recipient
-        $recipient = $document->pihak1->email
+        $recipient = $document->pihak2->email
             ?? $document->pihak2->email
             ?? config('mail.from.address');
 
@@ -387,7 +387,7 @@ class DocumentController extends Controller
         try {
 
             // kirim email
-            Mail::to('amruazzamm@gmail.com')
+            Mail::to($recipient)
                 ->send(new SendEmail($document));
                 // dd($document);
             $document->status = 'published';
