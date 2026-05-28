@@ -51,11 +51,18 @@ class MenuHelper
                 ['name' => 'Berita Acara', 'path' => '/documents/berita-acara'],
             ],
         ],
-         [
+        [
             'name' => 'Pengajuan Dokumen',
             'icon' => 'pengajuan-dokumen',
             'path' => '/pengajuan-dokumen',
             'match' => '/pengajuan-dokumen*',
+            'roles' => ['admin'],
+        ],
+        [
+            'name' => 'Document Activities',
+            'icon' => 'document-activities',
+            'path' => '/document-activities',
+            'match' => '/document-activities*',
             'roles' => ['admin'],
         ],
     ];
@@ -83,16 +90,53 @@ class MenuHelper
 
                 return $items;
             })
-            ->values()
-            ->all();
+            ->values();
 
-        // Return as a single group for the sidebar
-        return [
-            [
-                'title' => 'Main',
-                'items' => $menus,
-            ],
-        ];
+        $dashboardItem = $menus->firstWhere('name', 'Dashboard');    
+
+        $masterDataItems = $menus->filter(function ($item) {
+            return in_array($item['name'], ['User', 'Mitra', 'Judul Kerjasama', 'Templates']);
+        })->values()->all();
+
+        $documentManagementItems = $menus->filter(function ($item) {
+            return in_array($item['name'], ['Dokumen', 'Pengajuan Dokumen']);
+        })->values()->all();
+
+        $monitoringItems = $menus->filter(function ($item) {
+            return $item['name'] === 'Document Activities';
+        })->values()->all();
+
+        $groups = [];
+
+        if ( $dashboardItem) {
+            $groups[] = [
+                'title' => '',
+                'items' => [$dashboardItem],
+            ];
+        }
+
+        if (! empty($masterDataItems)) {
+            $groups[] = [
+                'title' => 'Master Data',
+                'items' => $masterDataItems,
+            ];
+        }
+
+        if (! empty($documentManagementItems)) {
+            $groups[] = [
+                'title' => 'Document Management',
+                'items' => $documentManagementItems,
+            ];
+        }
+
+        if (! empty($monitoringItems)) {
+            $groups[] = [
+                'title' => 'Monitoring',
+                'items' => $monitoringItems,
+            ];
+        }
+
+        return $groups;
     }
 
     public static function isActive($path)
@@ -140,7 +184,9 @@ class MenuHelper
             'dokumen' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M304 112L192 112C183.2 112 176 119.2 176 128L176 512C176 520.8 183.2 528 192 528L448 528C456.8 528 464 520.8 464 512L464 272L376 272C336.2 272 304 239.8 304 200L304 112zM444.1 224L352 131.9L352 200C352 213.3 362.7 224 376 224L444.1 224zM128 128C128 92.7 156.7 64 192 64L325.5 64C342.5 64 358.8 70.7 370.8 82.7L493.3 205.3C505.3 217.3 512 233.6 512 250.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128z"/></svg>',
 
             'pengajuan-dokumen' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none" /> <path fill="currentColor" d="M14.549 19.836Q13.385 18.67 13.385 17t1.164-2.835T17.384 13q1.672 0 2.836 1.165q1.165 1.164 1.165 2.835t-1.165 2.836T17.385 21t-2.836-1.164m4.492-.634l.546-.546l-1.818-1.818v-2.722H17v3.046zM5.616 20q-.672 0-1.144-.472T4 18.385V5.615q0-.67.472-1.143Q4.944 4 5.616 4h4.636q.14-.586.623-.985q.483-.4 1.125-.4q.654 0 1.134.4q.48.398.62.985h4.63q.672 0 1.144.472T20 5.616v6.019q-.258-.133-.488-.233T19 11.223V5.615q0-.23-.192-.423T18.384 5H16v2.23H8V5H5.616q-.231 0-.424.192T5 5.616v12.769q0 .269.173.442t.443.173h6.126q.08.28.189.521q.11.24.28.479zm6.962-14.999q.23-.23.23-.578t-.23-.578t-.578-.23t-.578.23t-.23.578t.23.578t.578.23t.578-.23" />
-            </svg>'
+            </svg>',
+
+            'document-activities' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"/> <path fill="currentColor" d="M14.549 19.836Q13.385 18.67 13.385 17t1.164-2.835T17.384 13q1.672 0 2.836 1.165q1.165 1.164 1.165 2.835t-1.165 2.836T17.385 21t-2.836-1.164m4.492-.634l.546-.546l-1.818-1.818v-2.722H17v3.046zM5.616 20q-.672 0-1.144-.472T4 18.385V5.615q0-.67.472-1.143Q4.944 4 5.616 4h4.636q.14-.586.623-.985q0-.4 1.125-.4q0 .654-.4 1.134q-.398.48-.985h4.63q-.672 0-1.144-.472T20 5.616v6q-.258-.133-.488-.233T19 11V5q0-.23-.192-.423T18.384 5H16v2H8V5H5.616q-.231 0-.424.192T5 5.616v12q0 .269.173t.443.173h6q0 .28-.189 .521q-.11 .24 -.28 .479zm6-15q0 .23 -.192 .423T11 .999h-4v2h12v-2h-4q -.231 0 -.424 -.192T16 .999z"/> </svg>'
         ];
 
         return $icons[$iconName] ?? '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/></svg>';

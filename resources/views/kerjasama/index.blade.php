@@ -3,7 +3,8 @@
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Data Judul Kerjasama"/>
-    <div class="space-y-6 md:space-y-7 mt-4">
+    <a href="{{ route('judul-kerjasama.create') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
+    <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <!-- Header -->
             <!-- Table -->
@@ -11,7 +12,6 @@
                    <table id="tableKerjasama" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium dark:text-gray-200"></h3>
-                    <a href="{{ route('judul-kerjasama.create') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
                 </div>
                     <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-100 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>

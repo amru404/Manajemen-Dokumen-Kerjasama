@@ -2,8 +2,8 @@
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Data User"/>
-    <a href="{{ route('users.create') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2">Add User</a>
-    <div class="space-y-6 md:space-y-7 mt-4">
+    <a href="{{ route('users.create') }}" class="mb-6 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add User</a>
+    <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
                 <table id="tableUsers" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
@@ -54,7 +54,33 @@
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
+                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                language: {
+                    search: "",
+                    searchPlaceholder: "Cari...",
+                    lengthMenu: "Tampilkan _MENU_ entri",
+                    paginate: { previous: "Sebelumnya", next: "Berikutnya" }
+                }
             });
+
+            // style search input and length select
+            const searchInput = document.querySelector('#tableUsers_filter input');
+            if (searchInput) {
+                searchInput.classList.add('rounded-md', 'border', 'px-3', 'py-2');
+            }
+            const lengthSelect = document.querySelector('#tableUsers_length select');
+            if (lengthSelect) {
+                lengthSelect.classList.add('rounded-md', 'border', 'px-2', 'py-1');
+            }
+
+            // style pagination buttons
+            const observer = new MutationObserver(() => {
+                document.querySelectorAll('#tableUsers_paginate button').forEach(btn => {
+                    btn.classList.add('rounded-md', 'border', 'px-2', 'py-1', 'mx-1');
+                });
+            });
+            const paginateElem = document.querySelector('#tableUsers_paginate');
+            if (paginateElem) observer.observe(paginateElem, { childList: true, subtree: true });
         });
     </script>
 @endsection

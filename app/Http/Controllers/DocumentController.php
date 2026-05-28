@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmail; 
 
 
+
 class DocumentController extends Controller
 {
 
@@ -163,7 +164,8 @@ class DocumentController extends Controller
         DocumentActivity::create([
             'document_id' => $document->id,
             'user_id' => auth()->id(),
-            'activity_type' => 'created'
+            'activity_type' => 'created',
+            'description' => 'Document created with nomor ' . $document->nomor_document . '.',
         ]);
 
         $slug = $request->input('origin_slug');
@@ -231,6 +233,13 @@ class DocumentController extends Controller
             'pihak_2_id' => 'nullable|exists:mitras,id',
         ]);
 
+        documentActivity::create([
+            'document_id' => $document->id,
+            'user_id' => auth()->id(),
+            'activity_type' => 'updated',
+            'description' => 'Document updated with nomor ' . $document->nomor_document . '.',
+        ]);
+
         $document->update($data);
         return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'))->with('success', 'Document updated.');
     }
@@ -242,6 +251,13 @@ class DocumentController extends Controller
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
             abort(403);
         }
+
+        DocumentActivity::create([
+            'document_id' => $document->id,
+            'user_id' => auth()->id(),
+            'activity_type' => 'deleted',
+            'description' => 'Document deleted with nomor ' . $document->nomor_document . '.',
+        ]);
 
         $document->delete();
 
@@ -352,13 +368,15 @@ class DocumentController extends Controller
                 DocumentActivity::create([
                     'document_id' => $document->id,
                     'user_id' => auth()->id(),
-                    'activity_type' => 'approved'
+                    'activity_type' => 'approved',
+                    'description' => 'Document approved with nomor ' . $document->nomor_document . '.',
                 ]);
             } elseif ($request->input('status') === 'denied') {
                 DocumentActivity::create([
                     'document_id' => $document->id,
                     'user_id' => auth()->id(),
-                    'activity_type' => 'rejected'
+                    'activity_type' => 'rejected',
+                    'description' => 'Document denied with nomor ' . $document->nomor_document . '.',
                 ]);
             }
 
@@ -413,6 +431,12 @@ class DocumentController extends Controller
             $document->status = 'published';
             $document->save();
 
+            DocumentActivity::create([
+                    'document_id' => $document->id,
+                    'user_id' => auth()->id(),
+                    'activity_type' => 'published',
+                    'description' => 'Document published and email sent to ' . $recipient
+            ]);
             
             return redirect()
                 ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
@@ -428,7 +452,7 @@ class DocumentController extends Controller
                 $document->id .
                 ': ' . $e->getMessage()
             );
-                dd(config('mail.mailers.smtp'));
+                // dd(config('mail.mailers.smtp'));
 
             return redirect()
                 ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))

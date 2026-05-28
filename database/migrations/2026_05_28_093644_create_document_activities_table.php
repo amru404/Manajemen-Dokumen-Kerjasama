@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('document_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('activity_type', ['created', 'updated', 'approved', 'denied', 'submitted', 'expired']);
+            $table->enum('activity_type', ['created', 'updated', 'approved','deleted', 'denied', 'submitted', 'expired','published'])->default('created');
             $table->text('description')->nullable();
             $table->timestamps();
         });

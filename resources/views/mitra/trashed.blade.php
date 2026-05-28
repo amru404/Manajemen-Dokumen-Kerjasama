@@ -5,7 +5,7 @@
     <div class="flex flex-wrap items-center gap-3 mb-6">
         <a href="{{ route('mitra') }}" class="bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2">Back to Mitra</a>
     </div>
-    <div class="space-y-6 md:space-y-7 mt-4">
+    <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
                 <table id="tableMitraTrashed" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-gray-700 dark:text-gray-400">

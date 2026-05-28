@@ -2,7 +2,7 @@
 
 @section('content')
     <x-common.page-breadcrumb pageTitle="Edit User"/>
-    <div class="space-y-6 md:space-y-7 mt-4">
+    <div class="space-y-6 md:space-y-7 mt-6">
         <x-common.component-card title="">
             <form method="POST" action="{{ route('users.update', $user) }}">
                 @csrf

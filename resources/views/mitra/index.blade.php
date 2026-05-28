@@ -4,10 +4,10 @@
 @section('content')
     <x-common.page-breadcrumb pageTitle="Data Mitra"/>
     <div class="flex flex-wrap items-center gap-3 mb-6">
-        <a href="{{ route('mitra.create') }}" class="bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2">Add Mitra</a>
-        <a href="{{ route('mitra.trashed') }}" class="bg-red-200 text-red-600 hover:bg-red-300 rounded-lg text-red-900 p-2">Trash</a>
+        <a href="{{ route('mitra.create') }}" class="bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Mitra</a>
+        <a href="{{ route('mitra.trashed') }}" class="bg-red-200 text-red-600 hover:bg-red-300 rounded-lg text-red-900 p-2 text-sm">Trash</a>
     </div>
-    <div class="space-y-6 md:space-y-7 mt-4">
+    <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <!-- Header -->
             <!-- Table -->
