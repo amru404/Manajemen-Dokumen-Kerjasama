@@ -7,6 +7,7 @@ use App\Models\Mitra;
 use Illuminate\Http\Request;
 use App\Models\Document;
 use App\Models\Template;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class JudulKerjasamaController extends Controller
 {
@@ -41,8 +42,8 @@ class JudulKerjasamaController extends Controller
         ]);
 
         Kerjasama::create($validated);
-
-        return redirect()->route('judul-kerjasama')->with('success', 'Judul kerjasama berhasil ditambahkan.');
+        Alert::success('Berhasil', 'Judul kerjasama berhasil ditambahkan.');
+        return redirect()->route('judul-kerjasama');
     }
 
     /**
@@ -77,8 +78,8 @@ class JudulKerjasamaController extends Controller
         ]);
 
         $judul_kerjasama->update($validated);
-
-        return redirect()->route('judul-kerjasama')->with('success', 'Judul kerjasama berhasil diperbarui.');
+        Alert::success('Berhasil', 'Judul kerjasama berhasil diperbarui.');
+        return redirect()->route('judul-kerjasama');
     }
 
     /**
@@ -87,6 +88,8 @@ class JudulKerjasamaController extends Controller
     public function destroy(Kerjasama $judul_kerjasama)
     {
         $judul_kerjasama->delete();
-        return redirect()->route('judul-kerjasama')->with('success', 'Judul kerjasama berhasil dihapus.');
+        Alert::success('Berhasil', 'Judul kerjasama berhasil dihapus.');
+
+        return redirect()->route('judul-kerjasama');
     }
 }

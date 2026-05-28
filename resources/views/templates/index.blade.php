@@ -61,7 +61,7 @@
                                             <i class="fa-regular fa-pen-to-square"></i>
                                         </a>
 
-                                        <form action="{{ route('templates.destroy', $t->id) }}" method="POST" onsubmit="return confirm('Hapus template ini?');">
+                                        <form action="{{ route('templates.destroy', $t->id) }}" method="POST" data-swal-confirm data-swal-title="Hapus template ini?" data-swal-text="Template akan dihapus permanen">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="flex justify-center text-gray-700 cursor-pointer size-5 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 text-sm" title="Hapus Template">

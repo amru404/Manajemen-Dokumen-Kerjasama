@@ -15,6 +15,7 @@ use PhpOffice\PhpWord\IOFactory;
 use App\Helpers\ReplaceHelper;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmail; 
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 
@@ -125,7 +126,7 @@ class DocumentController extends Controller
             'mode' => 'required|in:form,upload',
             'template_id' => 'nullable|exists:templates,id',
             'judul_id' => 'nullable|exists:judul_kerjasamas,id',
-            'status' => 'required|in:draft,approved,published',
+            'status' => 'required|in:denied,draft,submitted,approved,published',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
@@ -174,7 +175,8 @@ class DocumentController extends Controller
             if ($tpl) $slug = $this->typeToSlug($tpl->document_type);
         }
 
-        return redirect()->route('documents.' . ($slug ?? 'mou'))->with('success', 'Document created.');
+        Alert::success('Berhasil', 'Document berhasil dibuat.');
+        return redirect()->route('documents.' . ($slug ?? 'mou'));
     }
 
     protected function typeToSlug($type)
@@ -226,14 +228,14 @@ class DocumentController extends Controller
             'template_id' => 'nullable|exists:templates,id',
             'judul_id' => 'nullable|exists:judul_kerjasamas,id',
             'content_html' => 'required|string',
-            'status' => 'required|in:draft,approved,published',
+            'status' => 'required|in:denied,draft,submitted,approved,published',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
             'pihak_2_id' => 'nullable|exists:mitras,id',
         ]);
 
-        documentActivity::create([
+        DocumentActivity::create([
             'document_id' => $document->id,
             'user_id' => auth()->id(),
             'activity_type' => 'updated',
@@ -241,7 +243,8 @@ class DocumentController extends Controller
         ]);
 
         $document->update($data);
-        return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'))->with('success', 'Document updated.');
+        Alert::success('Berhasil', 'Dokumen berhasil diperbarui.');
+        return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
     }
 
     public function destroy($id)
@@ -260,8 +263,8 @@ class DocumentController extends Controller
         ]);
 
         $document->delete();
-
-        return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'))->with('success', 'Document deleted.');
+        Alert::success('Berhasil', 'Dokumen berhasil dihapus.');
+        return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
     }
 
     /**
@@ -379,8 +382,8 @@ class DocumentController extends Controller
                     'description' => 'Document denied with nomor ' . $document->nomor_document . '.',
                 ]);
             }
-
-            return redirect()->route('documents.pengajuan-dokumen')->with('success', 'Status dokumen updated.');
+            Alert::success('Berhasil', 'Status dokumen berhasil diperbarui.');
+            return redirect()->route('documents.pengajuan-dokumen');
         }
 
         return view('documents.status', compact('document'));
@@ -391,7 +394,6 @@ class DocumentController extends Controller
     // kirim email
    public function sendEmail($id)
     {
-    //    dd(config('mail.from.address'));
         $document = Document::with([
             'judul',
             'template',
@@ -410,24 +412,21 @@ class DocumentController extends Controller
         }
 
         // Ambil recipient
-        $recipient = $document->pihak2->email
-            ?? $document->pihak2->email
+        $recipient = optional($document->pihak2)->email
+            ?? optional($document->user)->email
             ?? config('mail.from.address');
 
         if (!$recipient) {
+            Alert::Error('Gagal', 'Dokumen gagal dikirimkan.');
+
             return redirect()
-                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
-                ->with(
-                    'error',
-                    'No recipient email available for this document.'
-                );
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'));
         }
 
         try {
             // kirim email
             Mail::to($recipient)
                 ->send(new SendEmail($document));
-                // dd($document);
             $document->status = 'published';
             $document->save();
 
@@ -438,12 +437,10 @@ class DocumentController extends Controller
                     'description' => 'Document published and email sent to ' . $recipient
             ]);
             
+            Alert::success('Berhasil', 'Dokumen berhasil dikirimkan.');
             return redirect()
-                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
-                ->with(
-                    'success',
-                    'Email sent successfully to ' . $recipient . '.'
-                );
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'));
+              
 
         } catch (\Exception $e) {
 
@@ -452,14 +449,10 @@ class DocumentController extends Controller
                 $document->id .
                 ': ' . $e->getMessage()
             );
-                // dd(config('mail.mailers.smtp'));
 
+            Alert::error('Gagal', 'Pengiriman email gagal: ' . $e->getMessage());
             return redirect()
-                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'))
-                ->with(
-                    'error',
-                    'Failed to send email.'
-                );
+                ->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'mou'));
 
         }
     }

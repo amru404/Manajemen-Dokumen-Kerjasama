@@ -6,6 +6,7 @@ use App\Models\Mitra;
 use App\Models\Judul_Kerjasama as Kerjasama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MitraController extends Controller
 {
@@ -56,7 +57,8 @@ class MitraController extends Controller
 
         Mitra::create($validated);
 
-        return redirect()->route('mitra')->with('success', 'Data mitra berhasil disimpan.');
+        Alert::success('Berhasil', 'Data mitra berhasil disimpan.');
+        return redirect()->route('mitra');
     }
 
     /**
@@ -124,7 +126,8 @@ class MitraController extends Controller
     }
 
     $mitra->update($data);
-    return redirect()->route('mitra')->with('success', 'Data mitra berhasil diperbarui.');
+    Alert::success('Berhasil', 'Data mitra berhasil diperbarui.');
+    return redirect()->route('mitra');
     }
     /**
      * Remove the specified resource from storage.
@@ -132,8 +135,8 @@ class MitraController extends Controller
     public function destroy(Mitra $mitra)
     {
         $mitra->delete();
-
-        return redirect()->route('mitra')->with('success', 'Data mitra berhasil dihapus.');
+        Alert::success('Berhasil', 'Data mitra berhasil dihapus.');
+        return redirect()->route('mitra');
     }
 
     /**
@@ -153,8 +156,8 @@ class MitraController extends Controller
     {
         $mitra = Mitra::onlyTrashed()->findOrFail($id);
         $mitra->restore();
-
-        return redirect()->route('mitra.trashed')->with('success', 'Data mitra berhasil dipulihkan.');
+        Alert::success('Berhasil', 'Data mitra berhasil dipulihkan.');
+        return redirect()->route('mitra.trashed');
     }
 
     /**
@@ -173,7 +176,7 @@ class MitraController extends Controller
         }
 
         $mitra->forceDelete();
-
-        return redirect()->route('mitra.trashed')->with('success', 'Data mitra berhasil dihapus permanen.');
+        Alert::success('Berhasil', 'Data mitra berhasil dihapus permanen.');
+        return redirect()->route('mitra.trashed');
     }
 }

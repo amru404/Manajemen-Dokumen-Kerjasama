@@ -36,7 +36,14 @@
     <style>
         body{
         font-family: "Poppins", sans-serif;
-    }
+        }
+        .swal2-container, .swal2-backdrop {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 10000000 !important;
+        }
+        /* Target sidebar by id and header element to ensure they stay below the alert */
+        #sidebar, header, .navbar { z-index: 1000 !important; }
     </style>
     <script>
         document.addEventListener('alpine:init', () => {
@@ -98,6 +105,8 @@
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Apply dark mode immediately to prevent flash -->
     <script>
         (function() {
@@ -154,9 +163,38 @@
 
     </div>
     
-
+    @include('sweetalert::alert')
 </body>
 
 @stack('scripts')
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('form[data-swal-confirm]').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const title = form.dataset.swalTitle || 'Hapus data?';
+                const text = form.dataset.swalText || 'Data akan dihapus permanen';
+                const confirmButtonText = form.dataset.swalConfirm || 'Ya, hapus';
+                const cancelButtonText = form.dataset.swalCancel || 'Batal';
+
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: confirmButtonText,
+                    cancelButtonText: cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 
 </html>

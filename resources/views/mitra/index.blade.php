@@ -62,10 +62,10 @@
                                         <a href="{{ route('mitra.edit', $m->id) }}" class="text-gray-700 hover:text-green-500 text-lg dark:text-gray-400 dark:hover:text-indigo-400 text-sm " title="Edit">
                                              <svg class="inline h-5 w-5 text-sm " fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                         </a>
-                                        <form action="{{ route('mitra.destroy', $m->id) }}" method="POST" class="inline-block">
+                                        <form action="{{ route('mitra.destroy', $m->id) }}" method="POST" class="inline-block" data-swal-confirm data-swal-title="Hapus mitra ini?" data-swal-text="Data akan dipindahkan ke Sampah">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-gray-700 hover:text-red-500 text-lg dark:text-red-400 dark:hover:text-indigo-400" title="Hapus" onclick="return confirm('Hapus mitra ini?')">
+                                            <button type="submit" class="text-gray-700 hover:text-red-500 text-lg dark:text-red-400 dark:hover:text-indigo-400" title="Hapus">
                                                 <svg class="inline h-5 w-5 text-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0V5a2 2 0 00-2-2h-3.5"/></svg>
                                             </button>
                                         </form>

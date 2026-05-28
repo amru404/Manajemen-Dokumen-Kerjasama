@@ -28,7 +28,7 @@
                                     <a href="{{ route('users.edit', $u) }}" class="text-gray-700 hover:text-green-500 text-lg" title="Edit">
                                        <i class="fa-regular fa-pen-to-square text-sm"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('users.destroy', $u) }}" onsubmit="return confirm('Hapus user ini?')">
+                                    <form method="POST" action="{{ route('users.destroy', $u) }}" data-swal-confirm data-swal-title="Hapus user ini?" data-swal-text="User akan dihapus permanen">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-gray-700 hover:text-red-500" title="Hapus">

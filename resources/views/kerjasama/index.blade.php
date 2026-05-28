@@ -88,7 +88,7 @@
                                                 <i class="fa-regular fa-pen-to-square"></i>
                                         </a>
 
-                                        <form method="POST" action="{{ route('judul-kerjasama.destroy', $kj) }}" onsubmit="return confirm('Hapus judul kerjasama ini?')">
+                                        <form method="POST" action="{{ route('judul-kerjasama.destroy', $kj) }}" id="delete-form-{{ $kj->id }}" data-swal-confirm data-swal-title="Hapus data?" data-swal-text="Data akan dihapus permanen">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-gray-700 hover:text-red-500" title="Hapus">
@@ -106,6 +106,7 @@
     </div>
 
 
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

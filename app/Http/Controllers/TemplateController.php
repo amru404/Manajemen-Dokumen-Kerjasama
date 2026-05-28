@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class TemplateController extends Controller
 {
@@ -34,7 +35,8 @@ class TemplateController extends Controller
 
         $template = Template::create($data);
 
-        return redirect()->route('templates.index')->with('success', 'Template created.');
+        Alert::success('Berhasil', 'Template berhasil dibuat.');
+        return redirect()->route('templates.index');
     }
 
     public function show(Template $template)
@@ -58,13 +60,14 @@ class TemplateController extends Controller
 
         $template->update($data);
 
-        return redirect()->route('templates.index')->with('success', 'Template updated.');
+        Alert::success('Berhasil', 'Template berhasil diperbarui.');
+        return redirect()->route('templates.index');
     }
 
     public function destroy(Template $template)
     {
         $template->delete();
-
-        return redirect()->route('templates.index')->with('success', 'Template deleted.');
+        Alert::success('Berhasil', 'Template berhasil dihapus.');
+        return redirect()->route('templates.index');
     }
 }

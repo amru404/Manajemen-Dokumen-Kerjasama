@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {
@@ -39,7 +40,9 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('users')->with('success', 'User berhasil dibuat.');
+        Alert::success('Berhasil', 'User berhasil dibuat.');
+        return redirect()->route('users');
+        
     }
 
     public function edit(User $user)
@@ -67,12 +70,14 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users')->with('success', 'User berhasil diperbarui.');
+        Alert::success('Berhasil', 'User berhasil diperbarui.');
+        return redirect()->route('users');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('users')->with('success', 'User berhasil dihapus.');
+        Alert::success('Berhasil', 'User berhasil dihapus.');
+        return redirect()->route('users');
     }
 }

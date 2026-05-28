@@ -30,23 +30,36 @@ class SendEmail extends Mailable
     public function build()
     {
         // Jika source upload → attach file asli
-        if (
-            $this->document->source === 'upload' &&
-            $this->document->file_path
-        ) {
-
-            $storagePath = storage_path(
-                'app/public/' . $this->document->file_path
-            );
-
-            if (!file_exists($storagePath)) {
-                throw new \Exception('File upload tidak ditemukan.');
+        if ($this->document->source === 'upload') {
+            if (!$this->document->file_path) {
+                throw new \Exception('File path tidak tersedia untuk dokumen upload.');
             }
 
-            return $this->view('email.document')
-                ->subject(
-                    optional($this->document->judul)->judul ?? 'Document'
-                )
+            // Coba akses file dari storage path
+            $storagePath = storage_path('app/public/' . $this->document->file_path);
+
+            if (!file_exists($storagePath)) {
+                // Fallback: coba dari public disk
+                $publicPath = public_path('storage/' . $this->document->file_path);
+                if (file_exists($publicPath)) {
+                    $storagePath = $publicPath;
+                } else {
+                    \Log::error(
+                        'File upload tidak ditemukan untuk document ID ' .
+                        $this->document->id . 
+                        '. Path diharapkan: ' . $storagePath . 
+                        ' atau ' . $publicPath
+                    );
+                    throw new \Exception('File tidak ditemukan: ' . $this->document->file_path);
+                }
+            }
+
+            $subject = optional($this->document->judul)->judul ?? 'Document';
+            return $this->view('emails.send_email', [
+                'subject' => $subject,
+                'body' => 'Dokumen terlampir.',
+            ])
+                ->subject($subject)
                 ->attach($storagePath);
         }
 
