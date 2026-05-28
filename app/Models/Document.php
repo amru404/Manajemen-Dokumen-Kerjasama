@@ -48,4 +48,26 @@ class Document extends Model
     {
         return $this->belongsTo(Mitra::class, 'pihak_2_id');
     }
+
+   public static function checkExpired()
+    {
+        $today = now();
+
+        self::where('end_date', '<', $today)
+            ->update([
+                'status' => 'expired'
+            ]);
+
+        self::whereBetween('end_date', [$today, $today->copy()->addDays(30)])
+            ->where('status', '!=', 'expired')
+            ->update([
+                'status' => 'akan_expired'
+            ]);
+    }
+
+     public function documentActivities()
+    {
+        return $this->hasMany(DocumentActivity::class);
+    }
 }
+

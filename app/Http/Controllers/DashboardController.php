@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 use App\Models\Document;
-
 use Illuminate\Http\Request;
+use App\Models\DocumentActivity;
+use Carbon\Carbon;
+
 
 class DashboardController extends Controller
 {
    public function index()
     {
-    // total per tipe dokumen
+        Document::checkExpired();
         $mouCount = Document::whereHas('template', function ($q) {
             $q->where('document_type', 'MoU');
         })->count();
@@ -22,14 +24,26 @@ class DashboardController extends Controller
             $q->where('document_type', 'Berita Acara');
         })->count();
 
-        // Dokumen terbaru
-        $recentDocuments = Document::with(['template', 'judul','pihak1'])
+
+        // Dokumen otw expired
+        $akanExpired = Document::with(['template','judul','pihak1','pihak2','user'])
+            ->where('status', 'akan_expired')
+            ->orderBy('end_date', 'asc')
+            ->take(5)
+            ->get();
+
+        // Dokumen activity
+        $documentActivity = DocumentActivity::with(['document','user'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
+        foreach ($akanExpired as $document) {
+            $document->end_date = Carbon::parse($document->end_date)->format('d M Y');
+        }
+
         // dd($recentDocuments);
-    return view('pages.dashboard.ecommerce', compact('mouCount', 'pksCount', 'beritaAcaraCount', 'recentDocuments'));
+    return view('pages.dashboard.ecommerce', compact('mouCount', 'pksCount', 'beritaAcaraCount', 'documentActivity','akanExpired'));
     }
 
     public function total(Request $request)

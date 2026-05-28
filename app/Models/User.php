@@ -50,6 +50,16 @@ class User extends Authenticatable
     // Relations
     public function templates()
     {
-        return $this->hasMany(\App\Models\Template::class);
+        return $this->hasMany(Template::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function documentActivities()
+    {
+        return $this->hasMany(DocumentActivity::class);
     }
 }

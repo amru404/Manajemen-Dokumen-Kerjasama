@@ -33,7 +33,16 @@
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($d->template)->document_type ?? '—' }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $d->status == 'published' ? 'bg-green-100 text-green-800' : ($d->status=='final' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">{{ $d->status }}</span>
+                                    <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ match($d->status) {'draft' => 'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400',
+                                    'submitted' => 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400',
+                                    'approved' => 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400',
+                                    'published' => 'bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500',
+                                    'aktif' => 'bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400',
+                                    'selesai' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400',
+                                    'denied' => 'bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500',
+                                    'akan_expired' => 'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-400',
+                                    'expired' => 'bg-gray-100 text-gray-500 dark:bg-gray-600/20 dark:text-gray-400',
+                                    } }}">{{ $d->status }}</span>
                                 </td>
                                 
                                 <td class="px-4 sm:px-6 py-3.5">
@@ -58,7 +67,7 @@
                                             <button type="submit" name="status" value="denied" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-3 py-2 text-red-700 hover:bg-red-100" title="Tolak dokumen">
                                                 <i class="fa-regular fa-circle-xmark"></i>
                                             </button>
-                                            <button type="submit" name="status" value="final" class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100" title="Setujui final dokumen">
+                                            <button type="submit" name="status" value="approved" class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100" title="Setujui dokumen">
                                                 <i class="fa-regular fa-circle-check"></i>
                                             </button>
                                         </div>

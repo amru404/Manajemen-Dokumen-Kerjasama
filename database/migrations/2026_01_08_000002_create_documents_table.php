@@ -18,13 +18,13 @@ class CreateDocumentsTable extends Migration
             $table->string('nomor_document')->unique();
             $table->foreignId('template_id')->constrained()->onDelete('cascade');
             $table->foreignId('judul_id')->nullable()->constrained('judul_kerjasamas')->nullOnDelete();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('pihak_1_id')->constrained('mitras')->onDelete('cascade');
             $table->foreignId('pihak_2_id')->constrained('mitras')->onDelete('cascade');
             $table->longText('content_html')->nullable();
             $table->string('file_path')->nullable();
             $table->enum('source', ['generate', 'upload'])->default('generate');
-            $table->enum('status', ['denied','draft', 'final', 'published'])->default('draft');
+            $table->enum('status', ['denied','draft','submitted', 'approved', 'published','akan_expired','expired'])->default('draft');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

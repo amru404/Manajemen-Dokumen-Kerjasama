@@ -62,8 +62,10 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Status</label>
                     <select name="status" class="mt-1 block w-full rounded-md border px-3 py-2" required>
+                        <option value="denied" {{ $document->status == 'denied' ? 'selected' : '' }}>Denied</option>
                         <option value="draft" {{ $document->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="final" {{ $document->status == 'final' ? 'selected' : '' }}>Final</option>
+                        <option value="submitted" {{ $document->status == 'submitted' ? 'selected' : '' }}>Submitted</option>
+                        <option value="approved" {{ $document->status == 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="published" {{ $document->status == 'published' ? 'selected' : '' }}>Published</option>
                     </select>
                 </div>

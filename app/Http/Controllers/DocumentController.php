@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\Template;
 use App\Models\Mitra;
 use App\Models\Judul_Kerjasama;
+use App\Models\DocumentActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -123,7 +124,7 @@ class DocumentController extends Controller
             'mode' => 'required|in:form,upload',
             'template_id' => 'nullable|exists:templates,id',
             'judul_id' => 'nullable|exists:judul_kerjasamas,id',
-            'status' => 'required|in:draft,final,published',
+            'status' => 'required|in:draft,approved,published',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
@@ -159,6 +160,12 @@ class DocumentController extends Controller
 
         $document = Document::create($data);
         
+        DocumentActivity::create([
+            'document_id' => $document->id,
+            'user_id' => auth()->id(),
+            'activity_type' => 'created'
+        ]);
+
         $slug = $request->input('origin_slug');
         if (!empty($data['template_id'])) {
             $tpl = Template::find($data['template_id']);
@@ -217,7 +224,7 @@ class DocumentController extends Controller
             'template_id' => 'nullable|exists:templates,id',
             'judul_id' => 'nullable|exists:judul_kerjasamas,id',
             'content_html' => 'required|string',
-            'status' => 'required|in:draft,final,published',
+            'status' => 'required|in:draft,approved,published',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
@@ -335,11 +342,25 @@ class DocumentController extends Controller
             abort(403);
         } elseif (auth()->check() && auth()->user()->role === 'admin') {
             $request->validate([
-                'status' => 'required|in:denied,draft,final,published',
+                'status' => 'required|in:denied,draft,approved,published',
             ]);
 
             $document->status = $request->input('status');
             $document->save();
+
+            if ($request->input('status') === 'approved') {
+                DocumentActivity::create([
+                    'document_id' => $document->id,
+                    'user_id' => auth()->id(),
+                    'activity_type' => 'approved'
+                ]);
+            } elseif ($request->input('status') === 'denied') {
+                DocumentActivity::create([
+                    'document_id' => $document->id,
+                    'user_id' => auth()->id(),
+                    'activity_type' => 'rejected'
+                ]);
+            }
 
             return redirect()->route('documents.pengajuan-dokumen')->with('success', 'Status dokumen updated.');
         }
@@ -385,7 +406,6 @@ class DocumentController extends Controller
         }
 
         try {
-
             // kirim email
             Mail::to($recipient)
                 ->send(new SendEmail($document));
