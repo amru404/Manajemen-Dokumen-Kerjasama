@@ -80,7 +80,6 @@
                 height="40" />
             <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
                 src="/images/logo/LOGO_WECAN_TRANSPARANT.png" alt="Logo" width="50" height="50" />
-
         </a>
     </div>
 

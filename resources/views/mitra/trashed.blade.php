@@ -8,10 +8,10 @@
     <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
-                <table id="tableMitraTrashed" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-gray-700 dark:text-gray-400">
+                <table id="tableMitraTrashed" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
                     <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>
-                            <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Nama</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Penanggung Jawab</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Jabatan</th>
@@ -40,21 +40,21 @@
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->email }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->no_telp }}</p>
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->no_telp }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $m->deleted_at }}</p>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <form action="{{ route('mitra.restore', $m->id) }}" method="POST" class="inline-block">
+                                        <form action="{{ route('mitra.restore', $m->id) }}" method="POST" class="inline-block" data-swal-confirm data-swal-title="Pulihkan mitra ini?" data-swal-text="Data akan dipulihkan kembali" data-swal-confirm-button-text="Pulihkan" data-swal-cancel-button-text="Batal" data-swal-confirm-button-color="#22c55e" data-swal-cancel-button-color="#ef4444">
                                             @csrf
                                             @method('PUT')
                                             <button type="submit" class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100" title="Restore">
                                                 <i class="fa-solid fa-trash-arrow-up"></i>
                                             </button>
                                         </form>
-                                        <form action="{{ route('mitra.force-delete', $m->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus permanen mitra ini?');">
+                                        <form action="{{ route('mitra.force-delete', $m->id) }}" method="POST" class="inline-block" data-swal-confirm data-swal-title="Hapus mitra ini?" data-swal-text="Data akan dihapus permanen">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-3 py-2 text-red-700 hover:bg-red-100" title="Delete Permanently">
@@ -80,7 +80,7 @@
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",

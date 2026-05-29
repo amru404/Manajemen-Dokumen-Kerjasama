@@ -28,7 +28,7 @@ $getStatusClassesActivity = function ($status) {
     <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
 
         <div class="max-w-full overflow-x-auto">
-            <table
+            <table id="tableDocuments" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center"
                 id="tableDocuments"
                 class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
                 <thead
@@ -41,7 +41,7 @@ $getStatusClassesActivity = function ($status) {
                         <th
                             class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Tipe</th>
                         <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Mitra</th>
+                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Desc</th>
                         <th
                             class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Waktu</th>
                         <th
@@ -68,7 +68,7 @@ $getStatusClassesActivity = function ($status) {
                         </td>
                         <td class="px_4 sm:px_6 py-3.5">
                             <p
-                                class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->document)->mitra->nama ?? '—' }}</p>
+                            class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $a->description ?? '—' }}</p>
                         </td>
                         <td class="px_4 sm:px_6 py-3.5">
                             <p
@@ -105,7 +105,7 @@ $getStatusClassesActivity = function ($status) {
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",

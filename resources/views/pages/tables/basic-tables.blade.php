@@ -9,7 +9,7 @@
             <!-- Header -->
             <!-- Table -->
             <div class="max-w-full overflow-x-auto">
-                <table id="example1" class="min-w-full divide-y divide-gray-200 stripe hover w-full">
+                <table id="example1" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
                     <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">
@@ -77,7 +77,7 @@
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",

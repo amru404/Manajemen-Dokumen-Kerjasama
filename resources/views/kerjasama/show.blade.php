@@ -59,7 +59,7 @@
             <!-- Header -->
             <!-- Table -->
             <div class="max-w-full overflow-x-auto">
-                <table id="tableKerjasama" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
+                <table id="tableKerjasama" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium dark:text-gray-200">List Kerjasama</h3>
                     <a href="{{ route('mitra') }}" " class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
@@ -72,11 +72,11 @@
                                     <span class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">No</span>
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-center font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul Kerjasama</th>
-                            <th class="px-6 py-3 text-center font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">MoU</th>
-                            <th class="px-6 py-3 text-center font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">PKS</th>
-                            <th class="px-6 py-3 text-center font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Berita Acara</th>
-                            <th class="px-6 py-3 text-center font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Action</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul Kerjasama</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">MoU</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">PKS</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Berita Acara</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,7 +125,7 @@
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",

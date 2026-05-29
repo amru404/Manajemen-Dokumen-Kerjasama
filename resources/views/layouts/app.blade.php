@@ -177,6 +177,7 @@
                 const text = form.dataset.swalText || 'Data akan dihapus permanen';
                 const confirmButtonText = form.dataset.swalConfirm || 'Ya, hapus';
                 const cancelButtonText = form.dataset.swalCancel || 'Batal';
+                
 
                 Swal.fire({
                     title: title,

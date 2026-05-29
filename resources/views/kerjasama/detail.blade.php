@@ -28,18 +28,17 @@
 
     <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
-            <div class="max-w-full overflow-x-auto">
-                <table id="tableDocuments" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
-                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+             <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+                <table class="w-full min-w-max text-sm text-left text-body table-auto rounded-base"><thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Jenis Dokumen</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Start</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">End</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Document</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Status</th>
-                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Action</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Judul</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Jenis Dokumen</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Start</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">End</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Document</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Status</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Action</th>
                         </tr>
                     </thead>
                     <tbody>

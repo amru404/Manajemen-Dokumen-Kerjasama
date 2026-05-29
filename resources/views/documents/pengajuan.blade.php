@@ -7,10 +7,10 @@
      <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
-                <table id="tableDocument" class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
+                <table id="tableDocument" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
                     <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
                         <tr>
-                            <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Jenis Dokumen</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Status</th>
@@ -60,14 +60,15 @@
                                 </td>
 
                                 <td class="px-4 sm:px-6 py-3.5">
-                                    <form action="{{ route('documents.status', $d->id) }}" method="POST" onsubmit="return confirm('Ubah status dokumen ini?');">
+                                    <form id="statusForm-{{ $d->id }}" action="{{ route('documents.status', $d->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
+                                        <input type="hidden" id="statusValue-{{ $d->id }}" name="status" value="">
                                         <div class="flex items-center gap-2">
-                                            <button type="submit" name="status" value="denied" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-3 py-2 text-red-700 hover:bg-red-100" title="Tolak dokumen">
+                                            <button type="button" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-3 py-2 text-red-700 hover:bg-red-100" title="Tolak dokumen" onclick="confirmStatusChange('{{ $d->id }}', 'denied')">
                                                 <i class="fa-regular fa-circle-xmark"></i>
                                             </button>
-                                            <button type="submit" name="status" value="approved" class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100" title="Setujui dokumen">
+                                            <button type="button" class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-3 py-2 text-green-700 hover:bg-green-100" title="Setujui dokumen" onclick="confirmStatusChange('{{ $d->id }}', 'approved')">
                                                 <i class="fa-regular fa-circle-check"></i>
                                             </button>
                                         </div>
@@ -86,6 +87,40 @@
     </div>
 
     <script>
+        function confirmStatusChange(docId, status) {
+            let title, text, confirmButtonText, confirmButtonColor, icon;
+
+            if (status === 'denied') {
+                title = 'Tolak Dokumen?';
+                text = 'Dokumen akan ditolak dan pengajuan ditutup';
+                confirmButtonText = 'Ya, tolak';
+                confirmButtonColor = '#ef4444';
+                icon = 'warning';
+            } else {
+                title = 'Setujui Dokumen?';
+                text = 'Dokumen akan disetujui dan dapat dipublikasikan';
+                confirmButtonText = 'Ya, setujui';
+                confirmButtonColor = '#22c55e';
+                icon = 'question';
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: confirmButtonText,
+                confirmButtonColor: confirmButtonColor,
+                reverseButtons: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('statusValue-' + docId).value = status;
+                    document.getElementById('statusForm-' + docId).submit();
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const table = new DataTable('#tableDocument', {
                 responsive: true,
@@ -94,7 +129,7 @@
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
                 columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex items-center justify-between mb-4'lfr>t<'mt-4 flex items-center justify-between'ip>",
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",
