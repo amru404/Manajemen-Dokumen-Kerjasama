@@ -343,7 +343,7 @@ class DocumentController extends Controller
     public function PengajuanDokumen()
     {
         $documents = Document::with(['judul', 'template'])
-            ->where('status', 'draft')
+            ->where('status', 'submitted')
             ->when(auth()->check() && auth()->user()->role === 'staff', function ($query) {
                 $query->where('user_id', auth()->id());
             })
@@ -378,7 +378,7 @@ class DocumentController extends Controller
                 DocumentActivity::create([
                     'document_id' => $document->id,
                     'user_id' => auth()->id(),
-                    'activity_type' => 'rejected',
+                    'activity_type' => 'denied',
                     'description' => 'Document denied with nomor ' . $document->nomor_document . '.',
                 ]);
             }

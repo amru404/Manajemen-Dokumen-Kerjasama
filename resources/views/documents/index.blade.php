@@ -156,7 +156,7 @@
                 reverseButtons: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '{{ route("documents.send-email", "") }}/' + docId;
+                    window.location.href = `/documents/${docId}/send-email`;
                 }
             });
         }
