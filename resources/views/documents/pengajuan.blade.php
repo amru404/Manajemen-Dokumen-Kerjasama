@@ -1,6 +1,7 @@
 @extends('/layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
     <x-common.page-breadcrumb pageTitle="Pengajuan Dokumen" />
 
 
@@ -60,6 +61,7 @@
                                 </td>
 
                                 <td class="px-4 sm:px-6 py-3.5">
+                                    @if(auth()->user()->role === 'admin')
                                     <form id="statusForm-{{ $d->id }}" action="{{ route('documents.status', $d->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
@@ -73,6 +75,31 @@
                                             </button>
                                         </div>
                                     </form>
+                                    @else
+                                        <form id="staffStatusForm-{{ $d->id }}" action="{{ route('documents.status', $d->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" id="staffStatusValue-{{ $d->id }}" name="status" value="">
+                                        </form>
+                                        <el-dropdown class="inline-block">
+                                            <button class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800" aria-expanded="false">
+                                                {{$d->status}}
+                                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
+                                                <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                                                </svg>
+                                            </button>
+
+                                            <el-menu anchor="bottom end" popover class="w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:border-white/[0.05] dark:bg-gray-900">
+                                                <div class="py-1">
+                                                    @if($d->status === 'draft')
+                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'submitted')">Ajukan untuk Persetujuan</a>
+                                                    @elseif($d->status === 'submitted')
+                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'draft')">Kembali ke Draft</a>
+                                                    @endif
+                                                </div>
+                                            </el-menu>
+                                        </el-dropdown>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -117,6 +144,42 @@
                 if (result.isConfirmed) {
                     document.getElementById('statusValue-' + docId).value = status;
                     document.getElementById('statusForm-' + docId).submit();
+                }
+            });
+        }
+
+        function confirmStaffStatusChange(event, docId, newStatus) {
+            event.preventDefault();
+            
+            if (!newStatus) return;
+
+            let title, text, confirmButtonText, confirmButtonColor;
+
+            if (newStatus === 'submitted') {
+                title = 'Ajukan untuk Persetujuan?';
+                text = 'Dokumen akan dikirim untuk persetujuan admin. Anda masih dapat mengeditnya di kemudian hari.';
+                confirmButtonText = 'Ya, ajukan';
+                confirmButtonColor = '#3b82f6';
+            } else if (newStatus === 'draft') {
+                title = 'Kembali ke Draft?';
+                text = 'Dokumen akan disimpan sebagai draft dan dapat diedit kembali.';
+                confirmButtonText = 'Ya, kembalikan';
+                confirmButtonColor = '#6366f1';
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: confirmButtonText,
+                confirmButtonColor: confirmButtonColor,
+                reverseButtons: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('staffStatusValue-' + docId).value = newStatus;
+                    document.getElementById('staffStatusForm-' + docId).submit();
                 }
             });
         }

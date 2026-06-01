@@ -42,9 +42,29 @@ class MenuHelper
             'roles' => ['admin', 'staff'],
         ],
         [
+            'name' => 'All Dokumen',
+            'icon' => 'dokumen',
+            'roles' => ['staff'],
+            'subItems' => [
+                ['name' => 'MoU', 'path' => '/documents/mou'],
+                ['name' => 'PKS', 'path' => '/documents/pks'],
+                ['name' => 'Berita Acara', 'path' => '/documents/berita-acara'],
+            ],
+        ],
+        [
+            'name' => 'My Dokumen',
+            'icon' => 'dokumen',
+            'roles' => ['staff'],
+            'subItems' => [
+                ['name' => 'MoU', 'path' => '/user/documents/mou'],
+                ['name' => 'PKS', 'path' => '/user/documents/pks'],
+                ['name' => 'Berita Acara', 'path' => '/user/documents/berita-acara'],
+            ],
+        ],
+        [
             'name' => 'Dokumen',
             'icon' => 'dokumen',
-            'roles' => ['admin', 'staff'],
+            'roles' => ['admin'],
             'subItems' => [
                 ['name' => 'MoU', 'path' => '/documents/mou'],
                 ['name' => 'PKS', 'path' => '/documents/pks'],
@@ -56,14 +76,14 @@ class MenuHelper
             'icon' => 'pengajuan-dokumen',
             'path' => '/pengajuan-dokumen',
             'match' => '/pengajuan-dokumen*',
-            'roles' => ['admin'],
+            'roles' => ['admin','staff'],
         ],
         [
             'name' => 'Document Activities',
             'icon' => 'document-activities',
             'path' => '/document-activities',
             'match' => '/document-activities*',
-            'roles' => ['admin'],
+            'roles' => ['admin','staff'],
         ],
     ];
 }
@@ -95,7 +115,7 @@ class MenuHelper
         $dashboardItem = $menus->firstWhere('name', 'Dashboard');    
 
         $masterDataItems = $menus->filter(function ($item) {
-            return in_array($item['name'], ['User', 'Mitra', 'Judul Kerjasama', 'Templates']);
+            return in_array($item['name'], ['User', 'Mitra', 'Judul Kerjasama', 'Templates', 'All Dokumen', 'My Dokumen']);
         })->values()->all();
 
         $documentManagementItems = $menus->filter(function ($item) {

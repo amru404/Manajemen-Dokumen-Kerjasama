@@ -9,6 +9,7 @@ use App\Models\Judul_Kerjasama;
 use App\Models\DocumentActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use PhpOffice\PhpWord\IOFactory;
@@ -86,22 +87,43 @@ class DocumentController extends Controller
 
     public function index($slug)
     {
+        
+        // $check = Document::with('user')->where('nomor_document', 'DOC0207/2026')->first();
+        // dd($check->user->name);
         $type = $this->slugToType($slug);
-
-        $query = Document::with(['pihak1', 'pihak2'])->whereHas('template', function ($q) use ($type) {
-            $q->where('document_type', $type);
-        });
+        $query = Document::with(['pihak1', 'pihak2', 'user'])
+            ->whereHas('template', function ($q) use ($type) {
+                $q->where('document_type', $type);
+            });
 
         if (auth()->check() && auth()->user()->role === 'staff') {
-            $query->where('user_id', auth()->id());
+            $query->where('status', 'published');
         }
+
+        $documents = $query->latest()->paginate(10);
+        $documents_file = $documents->first();
+        $pihak1 = optional($documents_file->pihak1)->name ?? '—';
+        $pihak2 = optional($documents_file->pihak2)->name ?? '—';
+        // $user = optional($documents_file)->user;
+        return view('documents.index', compact('documents', 'type', 'slug','documents_file', 'pihak1', 'pihak2'));
+    }
+
+
+    public function userDocument($slug)
+    {
+       $type = $this->slugToType($slug);
+
+        $query = Document::with(['pihak1', 'pihak2','user'])->where('user_id', auth()->id())
+        ->whereHas('template', function ($q) use ($type) {
+             $q->where('document_type', $type);
+        });
+    
 
         $documents = $query->latest()->paginate(10);
         $documents_file = $documents->first();
         $pihak1 = optional($documents_file)->pihak1 ?? '—';
         $pihak2 = optional($documents_file)->pihak2 ?? '—';
-        // dd($pihak1, $pihak2);
-        return view('documents.index', compact('documents', 'type', 'slug','documents_file', 'pihak1', 'pihak2'));
+        return view('documents.user-index', compact('documents', 'type', 'slug','documents_file', 'pihak1', 'pihak2'));
     }
 
 
@@ -205,7 +227,8 @@ class DocumentController extends Controller
         $document = Document::findOrFail($id);
 
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
-            abort(403);
+            Alert::error('Gagal', 'Anda tidak memiliki izin untuk mengedit dokumen ini.');
+            return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
         }
 
         $docType = optional($document->template)->document_type ?? 'MoU';
@@ -221,19 +244,58 @@ class DocumentController extends Controller
         $document = Document::findOrFail($id);
 
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
-            abort(403);
+            Alert::error('Gagal', 'Anda tidak memiliki izin untuk mengedit dokumen ini.');
+            return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
         }
 
+        $mode = $request->input('mode', 'form');
+
+        // Validasi common fields
         $data = $request->validate([
             'template_id' => 'nullable|exists:templates,id',
             'judul_id' => 'nullable|exists:judul_kerjasamas,id',
-            'content_html' => 'required|string',
             'status' => 'required|in:denied,draft,submitted,approved,published',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
             'pihak_2_id' => 'nullable|exists:mitras,id',
         ]);
+
+        // Validasi berdasarkan mode
+        if ($mode === 'form') {
+            $request->validate([
+                'content_html' => 'required|string',
+            ]);
+            $data['content_html'] = $request->input('content_html');
+            // Hanya update file_path jika ada file baru, otherwise keep lama
+            if (!$request->hasFile('pdf_file')) {
+                // Keep file lama, jangan ubah
+                unset($data['file_path']);
+            }
+            $data['source'] = 'generate';
+        } elseif ($mode === 'upload') {
+            if ($request->hasFile('pdf_file')) {
+                $request->validate([
+                    'pdf_file' => 'required|file|mimes:pdf|max:10240', // max 10MB
+                ]);
+
+                // Hapus file lama jika ada
+                if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
+                    Storage::disk('public')->delete($document->file_path);
+                }
+
+                // Simpan file baru
+                $file = $request->file('pdf_file');
+                $filePath = $file->store('documents', 'public');
+                $data['file_path'] = $filePath;
+            } else {
+                // Jika tidak ada file baru, keep file lama
+                unset($data['file_path']);
+            }
+            
+            $data['content_html'] = null;
+            $data['source'] = 'upload';
+        }
 
         DocumentActivity::create([
             'document_id' => $document->id,
@@ -252,7 +314,8 @@ class DocumentController extends Controller
         $document = Document::findOrFail($id);
 
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
-            abort(403);
+            Alert::error('Gagal', 'Anda tidak memiliki izin untuk menghapus dokumen ini.');
+            return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
         }
 
         DocumentActivity::create([
@@ -353,12 +416,31 @@ class DocumentController extends Controller
         return view('documents.pengajuan', compact('documents'));
     }
 
+
+    
     function StatusDokumen(request $request,$id)
     {
         $document = Document::findOrFail($id);
 
-        if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
-            abort(403);
+        if (auth()->check() && auth()->user()->role === 'staff') {
+            $request->validate([
+                'status' => 'required|in:draft,submitted',
+            ]);
+
+            $document->status = $request->input('status');
+            $document->save();
+
+            $statusLabel = $request->input('status') === 'submitted' ? 'Submitted' : 'Draft';
+            DocumentActivity::create([
+                'document_id' => $document->id,
+                'user_id' => auth()->id(),
+                'activity_type' => 'updated',
+                'description' => 'Document status changed to ' . $statusLabel . '.',
+            ]);
+
+            Alert::success('Berhasil', 'Status dokumen berhasil diperbarui.');
+            return redirect()->route('documents.pengajuan-dokumen');
+
         } elseif (auth()->check() && auth()->user()->role === 'admin') {
             $request->validate([
                 'status' => 'required|in:denied,draft,approved,published',

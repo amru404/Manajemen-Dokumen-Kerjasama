@@ -13,10 +13,15 @@ class DocumentActivityController extends Controller
     public function index()
     {
      $activities = DocumentActivity::with(['document', 'user'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->orderBy('created_at', 'desc');
+           
 
-            // dd($activities->);
+    if(auth()->user()->role === 'staff') {
+        $activities = $activities->where('user_id', auth()->id());
+    }
+    $activities = $activities->paginate(10)
+    ->appends(request()->query());
+
     return view('document_activities.index', compact('activities'));
 
     }

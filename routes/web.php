@@ -72,6 +72,13 @@ Route::middleware('role:admin,staff')->group(function () {
         Route::put('/documents/{id}', [DocumentController::class, 'update'])->name('documents.update');
         Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
+        // Pengajuan Dokumen
+        Route::get('/pengajuan-dokumen', [\App\Http\Controllers\DocumentController::class, 'PengajuanDokumen'])->name('documents.pengajuan-dokumen');
+        Route::put('/documents/{id}/status', [\App\Http\Controllers\DocumentController::class, 'StatusDokumen'])->name('documents.status');
+
+        // Document Activities
+        Route::get('/document-activities', [\App\Http\Controllers\DocumentActivityController::class, 'index'])->name('document-activities');
+
         // PDF export
         Route::get('/documents/{id}/pdf', [DocumentController::class, 'pdf'])->name('documents.pdf');
 
@@ -90,11 +97,21 @@ Route::middleware('role:admin,staff')->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
 
-        Route::get('/pengajuan-dokumen', [\App\Http\Controllers\DocumentController::class, 'PengajuanDokumen'])->name('documents.pengajuan-dokumen');
-        Route::put('/documents/{id}/status', [\App\Http\Controllers\DocumentController::class, 'StatusDokumen'])->name('documents.status');
         Route::get('/documents/{id}/send-email', [\App\Http\Controllers\DocumentController::class, 'sendEmail'])->name('documents.send-email');
 
-        Route::get('/document-activities', [\App\Http\Controllers\DocumentActivityController::class, 'index'])->name('document-activities');
+    });
+
+
+    Route::middleware('role:staff')->group(function () {
+         Route::get('user/documents/mou', [\App\Http\Controllers\DocumentController::class, 'userDocument'])->name('user.documents.mou')->defaults('type', 'MoU')->defaults('slug', 'mou');
+        Route::get('user/documents/mou/create', [\App\Http\Controllers\DocumentController::class, 'create'])->name('user.documents.MoU.create')->defaults('type', 'MoU')->defaults('slug', 'mou');
+
+        Route::get('user/documents/pks', [\App\Http\Controllers\DocumentController::class, 'userDocument'])->name('user.documents.PKS')->defaults('type', 'PKS')->defaults('slug', 'pks');
+        Route::get('user/documents/pks', [\App\Http\Controllers\DocumentController::class, 'userDocument'])->name('user.documents.pks')->defaults('type', 'PKS')->defaults('slug', 'pks');
+        Route::get('user/documents/pks/create', [\App\Http\Controllers\DocumentController::class, 'create'])->name('user.documents.PKS.create')->defaults('type', 'PKS')->defaults('slug', 'pks');
+
+        Route::get('user/documents/berita-acara', [\App\Http\Controllers\DocumentController::class, 'userDocument'])->name('user.documents.Berita Acara')->defaults('type', 'Berita Acara')->defaults('slug', 'berita-acara');
+        Route::get('user/documents/berita-acara/create', [\App\Http\Controllers\DocumentController::class, 'create'])->name('user.documents.Berita Acara.create')->defaults('type', 'Berita Acara')->defaults('slug', 'berita-acara');
 
     });
 

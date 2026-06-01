@@ -19,7 +19,7 @@
                 <div class="mt-4">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Pilih Mitra</label>
                     <select name="mitra_id" required class="w-full rounded-lg border border-gray-300 px-3 py-2">
-                        <option value="">-- Pilih Mitra --</option>
+                        <option value=""> Pilih Mitra </option>
                         @foreach($mitras as $id => $nama)
                             <option value="{{ $id }}" {{ old('mitra_id', $judul_kerjasama->mitra_id) == $id ? 'selected' : '' }}>{{ $nama }}</option>
                         @endforeach
