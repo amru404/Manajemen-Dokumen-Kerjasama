@@ -24,88 +24,73 @@ $getStatusClassesActivity = function ($status) {
 @section('content') 
     <x-common.page-breadcrumb pageTitle="Document Activities" />
         
-<x-common.page - breadcrumb pageTitle = "Add Data Mitra" /> <div class="space-y-6 md:space-y-7 mt-6">
-    <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <div class="space-y-6 md:space-y-7 mt-6">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div class="max-w-full overflow-y-scroll" style="max-height: calc(100vh - 200px);">
+                <table id="tableDocuments" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start" style="table-layout: fixed;">
+                    <thead class="sticky top-0 px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+                        <tr>
+                            <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start w-12">No</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul Dokumen</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start w-20">Tipe</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Deskripsi</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start w-40">Waktu</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start w-32">Dibuat Oleh</th>
+                            <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start w-24">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($activities as $a)
+                        <tr class="border-b border-gray-100 dark:border-white/[0.05] hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                            <td class="px-6 py-3.5">
+                                <span class="block font-medium text-gray-700 break-words text-theme-sm dark:text-gray-400">{{ $loop->iteration }}</span>
+                            </td>
 
-        <div class="max-w-full overflow-x-auto">
-            <table id="tableDocuments" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center"
-                id="tableDocuments"
-                class="table-fixed min-w-full divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start">
-                <thead
-                    class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
-                    <tr>
-                        <th
-                            class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul Dokumen</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Tipe</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Desc</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Waktu</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Dibuat Oleh</th>
-                        <th
-                            class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($activities as $a)
-                    <tr class="border-b border-gray_100 dark:border-white/[0.05]">
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <span
-                                class="block font medium text-gray_700 break-words text-theme-sm dark:text-gray-400">{{ $loop->iteration + ($activities->currentPage()-1) * $activities->perPage() }}</span>
-                        </td>
-
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <p
-                                class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->document)->judul->judul ?? '—' }}</p>
-                        </td>
-                        <td class="px_4 sm:px_6 py-3.5 text-center">
-                            <p
-                                class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->document->template)->document_type ?? '—' }}</p>
-                        </td>
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <p
-                            class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $a->description ?? '—' }}</p>
-                        </td>
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <p
-                                class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ $a->created_at->format('d M Y,H:i') }}</p>
-                        </td>
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <p
-                                class="text-gray_700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->user)->name ?? '—' }}</p>
-                        </td>
-                        <td class="px_4 sm:px_6 py-3.5">
-                            <span
-                                class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $getStatusClassesActivity($a->activity_type) }}">
-                                {{ $a->activity_type }}
-                            </span>
-                        </td>
-
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="mt-4">
-                {{ $activities->links() }}
+                            <td class="px-6 py-3.5">
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400 line-clamp-2">{{ optional($a->document->judul)->judul ?? '—' }}</p>
+                            </td>
+                            <td class="px-6 py-3.5 text-center">
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->document->template)->document_type ?? '—' }}</p>
+                            </td>
+                            <td class="px-6 py-3.5">
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400 line-clamp-2">{{ $a->description ?? '—' }}</p>
+                            </td>
+                            <td class="px-6 py-3.5">
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400 whitespace-nowrap">{{ $a->created_at->format('d M Y, H:i') }}</p>
+                            </td>
+                            <td class="px-6 py-3.5">
+                                <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->user)->name ?? '—' }}</p>
+                            </td>
+                            <td class="px-6 py-3.5">
+                                <span class="inline-block px-2 py-1 rounded text-xs font-semibold whitespace-nowrap {{ $getStatusClassesActivity($a->activity_type) }}">
+                                    {{ $a->activity_type }}
+                                </span>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
 
- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             const table = new DataTable('#tableDocuments', {
-                responsive: true,
+                responsive: false,
                 autoWidth: false,
                 pageLength: 10,
                 lengthMenu: [5, 10, 25, 50],
                 order: [[0, 'asc']],
-                columnDefs: [{ orderable: false, targets: -1 }],
-                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full overflow-x-auto dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
+                columnDefs: [
+                    { orderable: false, targets: -1 },
+                    { width: '48px', targets: 0 },
+                    { width: '80px', targets: 2 },
+                    { width: '160px', targets: 4 },
+                    { width: '128px', targets: 5 },
+                    { width: '96px', targets: 6 }
+                ],
+                dom: "<'flex flex-wrap items-center gap-3 justify-between mb-4 dark:text-gray-200 dark:border-gray-200'<'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'l><'flex flex-wrap items-center gap-3 dark:text-gray-200 dark:border-gray-200'f>><'w-full dark:text-gray-200 dark:border-gray-200't><'mt-4 flex items-center justify-between dark:text-gray-200 dark:border-gray-200'ip >",
                 language: {
                     search: "",
                     searchPlaceholder: "Cari...",

@@ -12,6 +12,9 @@ class DashboardController extends Controller
    public function index()
     {
         Document::checkExpired();
+        $today = Carbon::now()->toDateString();
+        
+        // Total MoU Count
         $mouCount = Document::whereHas('template', function ($q) {
             $q->where('document_type', 'MoU');
         })->count();
@@ -21,6 +24,7 @@ class DashboardController extends Controller
             })->where('user_id', auth()->id())->count();
         }
 
+        // Total PKS Count
         $pksCount = Document::whereHas('template', function ($q) {
             $q->where('document_type', 'PKS');
         })->count();
@@ -31,6 +35,7 @@ class DashboardController extends Controller
             })->where('user_id', auth()->id())->count();
         }
 
+        // Total Berita Acara Count
         $beritaAcaraCount = Document::whereHas('template', function ($q) {
             $q->where('document_type', 'Berita Acara');
         })->count();
@@ -39,6 +44,46 @@ class DashboardController extends Controller
             $beritaAcaraCount = Document::whereHas('template', function ($q) {
                 $q->where('document_type', 'Berita Acara');
             })->where('user_id', auth()->id())->count();
+        }
+
+        // Active MoU (start_date <= today AND end_date >= today AND status = published)
+        $activeMouCount = Document::whereHas('template', function ($q) {
+            $q->where('document_type', 'MoU');
+        })
+        ->where('status', 'published')
+        ->where('start_date', '<=', $today)
+        ->where('end_date', '>=', $today)
+        ->count();
+
+        if (auth()->check() && auth()->user()->role === 'staff') {
+            $activeMouCount = Document::whereHas('template', function ($q) {
+                $q->where('document_type', 'MoU');
+            })
+            ->where('status', 'published')
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
+            ->where('user_id', auth()->id())
+            ->count();
+        }
+
+        // Active PKS (start_date <= today AND end_date >= today AND status = published)
+        $activePksCount = Document::whereHas('template', function ($q) {
+            $q->where('document_type', 'PKS');
+        })
+        ->where('status', 'published')
+        ->where('start_date', '<=', $today)
+        ->where('end_date', '>=', $today)
+        ->count();
+
+        if (auth()->check() && auth()->user()->role === 'staff') {
+            $activePksCount = Document::whereHas('template', function ($q) {
+                $q->where('document_type', 'PKS');
+            })
+            ->where('status', 'published')
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
+            ->where('user_id', auth()->id())
+            ->count();
         }
 
         // Dokumen otw expired
@@ -77,8 +122,20 @@ class DashboardController extends Controller
             $document->end_date = Carbon::parse($document->end_date)->format('d M Y');
         }
 
+        // Count documents by status for chart
+        $chartData = [];
+        $statuses = ['draft', 'submitted', 'approved', 'published', 'denied', 'akan_expired', 'expired'];
+        
+        foreach ($statuses as $status) {
+            if (auth()->check() && auth()->user()->role === 'staff') {
+                $chartData[$status] = Document::where('status', $status)->where('user_id', auth()->id())->count();
+            } else {
+                $chartData[$status] = Document::where('status', $status)->count();
+            }
+        }
+
         // dd($recentDocuments);
-    return view('pages.dashboard.ecommerce', compact('mouCount', 'pksCount', 'beritaAcaraCount', 'documentActivity','akanExpired'));
+    return view('pages.dashboard.index', compact('mouCount', 'pksCount', 'beritaAcaraCount', 'documentActivity','akanExpired', 'activeMouCount', 'activePksCount', 'chartData'));
     }
 
     public function total(Request $request)
