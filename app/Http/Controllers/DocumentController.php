@@ -156,6 +156,22 @@ class DocumentController extends Controller
             'nomor_document' => 'required|string',
         ]);
 
+        
+        $template = Template::findOrFail($request->template_id);
+        $documentType = $template->document_type;
+        $exists = Document::where('judul_id', $request->judul_id)
+            ->whereHas('template', function ($q) use ($documentType) {
+                $q->where('document_type', $documentType);
+            })
+            ->exists();
+        // dd($exists);
+
+        if ($exists) {
+            return back()->withErrors([
+                'judul_id' => 'Dokumen jenis ini sudah ada untuk judul kerjasama yang dipilih.'
+            ]);
+        }
+
         // Validasi berdasarkan mode
         if ($mode === 'form') {
             $request->validate([
@@ -246,6 +262,21 @@ class DocumentController extends Controller
         if (auth()->check() && auth()->user()->role === 'staff' && $document->user_id !== auth()->id()) {
             Alert::error('Gagal', 'Anda tidak memiliki izin untuk mengedit dokumen ini.');
             return redirect()->route('documents.' . $this->typeToSlug(optional($document->template)->document_type ?? 'MoU'));
+        }
+
+        $template = Template::findOrFail($request->template_id);
+        $documentType = $template->document_type;
+        $exists = Document::where('judul_id', $request->judul_id)
+            ->whereHas('template', function ($q) use ($documentType) {
+                $q->where('document_type', $documentType);
+            })
+            ->exists();
+        // dd($exists);
+
+        if ($exists) {
+            return back()->withErrors([
+                'judul_id' => 'Dokumen jenis ini sudah ada untuk judul kerjasama yang dipilih.'
+            ]);
         }
 
         $mode = $request->input('mode', 'form');

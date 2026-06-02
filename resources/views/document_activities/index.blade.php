@@ -26,7 +26,7 @@ $getStatusClassesActivity = function ($status) {
         
     <div class="space-y-6 md:space-y-7 mt-6">
         <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
-            <div class="max-w-full overflow-y-scroll" style="max-height: calc(100vh - 200px);">
+            <div class="max-w-full overflow-y-scroll">
                 <table id="tableDocuments" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start" style="table-layout: fixed;">
                     <thead class="sticky top-0 px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                         <tr>
@@ -62,9 +62,7 @@ $getStatusClassesActivity = function ($status) {
                                 <p class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400">{{ optional($a->user)->name ?? '—' }}</p>
                             </td>
                             <td class="px-6 py-3.5">
-                                <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $getStatusClassesActivity($a->activity_type) }}">
-                                    {{ $a->activity_type }}
-                                </span>
+                                <span class="inline-block break-words max-w-full px-2 py-1 rounded text-xs font-semibold {{ $getStatusClassesActivity($a->activity_type) }}"> {{ ucfirst(str_replace('_', ' ', $a->activity_type)) }}
                             </td>
                         </tr>
                         @endforeach
