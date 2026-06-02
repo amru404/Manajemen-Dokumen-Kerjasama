@@ -108,6 +108,7 @@ class MitraController extends Controller
         'email' => $request->email,
     ];
 
+    
     if ($request->hasFile('logo')) {
         if ($mitra->logo) {
             Storage::disk('public')->delete($mitra->logo);
@@ -123,6 +124,12 @@ class MitraController extends Controller
         }
 
         $data['tanda_tangan'] = $request->file('tanda_tangan')->store('mitra_assets/tanda_tangan', 'public');
+    } elseif ($request->remove_tanda_tangan == 1) {
+        if ($mitra->tanda_tangan) {
+            Storage::disk('public')->delete($mitra->tanda_tangan);
+        }
+
+        $mitra->tanda_tangan = null;
     }
 
     $mitra->update($data);

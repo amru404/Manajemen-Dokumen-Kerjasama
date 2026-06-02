@@ -4,7 +4,7 @@
     <x-common.page-breadcrumb pageTitle="Create Template" />
 
     <div class="space-y-6 mt-4">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <form action="{{ route('templates.store') }}" method="POST">
                 @csrf
 
@@ -146,3 +146,4 @@
 
 
 @endsection
+

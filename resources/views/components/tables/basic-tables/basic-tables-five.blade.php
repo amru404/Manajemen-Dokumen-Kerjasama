@@ -123,7 +123,7 @@
         <table class="min-w-full">
             <!-- table header start -->
             <thead>
-                <tr class="border-gray-100 border-y dark:border-white/[0.05]">
+                <tr class="border-gray-100 border-y dark:border-gray-700">
                     <th class="px-6 py-3">
                         <div class="flex items-center">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Products</p>

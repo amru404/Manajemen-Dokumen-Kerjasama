@@ -6,10 +6,10 @@
 
 
      <div class="space-y-6 md:space-y-7 mt-6">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
                 <table id="tableDocument" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
-                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Judul</th>
@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                         @foreach($documents as $d)
-                            <tr class="border-b border-gray-100 dark:border-white/[0.05]">
+                            <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <span class="block font-medium text-gray-700 break-words text-theme-sm dark:text-gray-400">{{ $loop->iteration + ($documents->currentPage()-1) * $documents->perPage() }}</span>
                                 </td>
@@ -81,19 +81,19 @@
                                             <input type="hidden" id="staffStatusValue-{{ $d->id }}" name="status" value="">
                                         </form>
                                         <el-dropdown class="inline-block">
-                                            <button class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800" aria-expanded="false">
+                                            <button class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800" aria-expanded="false">
                                                 {{$d->status}}
                                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
                                                 <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
                                                 </svg>
                                             </button>
 
-                                            <el-menu anchor="bottom end" popover class="w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:border-white/[0.05] dark:bg-gray-900">
+                                            <el-menu anchor="bottom end" popover class="w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:border-gray-700 dark:bg-gray-900">
                                                 <div class="py-1">
                                                     @if($d->status === 'draft')
-                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'submitted')">Ajukan untuk Persetujuan</a>
+                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'submitted')">Ajukan untuk Persetujuan</a>
                                                     @elseif($d->status === 'submitted')
-                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-white/[0.05] dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'draft')">Kembali ke Draft</a>
+                                                        <a href="#" class="block w-full text-left px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-400 hover:bg-indigo-700 hover:text-white text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-indigo-700" onclick="confirmStaffStatusChange(event, '{{ $d->id }}', 'draft')">Kembali ke Draft</a>
                                                     @endif
                                                 </div>
                                             </el-menu>

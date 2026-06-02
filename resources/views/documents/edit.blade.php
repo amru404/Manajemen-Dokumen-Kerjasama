@@ -5,7 +5,7 @@
     <x-common.page-breadcrumb pageTitle="Edit Document - {{ optional($document->judul)->judul ?? 'Document' }}" />
 
     <div class="space-y-6 mt-4">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             
             <!-- Alpine.js Container -->
             <div x-data="documentEditForm()" class="space-y-6">
@@ -114,9 +114,11 @@
                     <div x-show="activeTab === 'form'" class="space-y-4">
                         <h3 class="text-lg font-semibold text-gray-900">Isi Dokumen</h3>
 
-                        <div>
-                            <textarea id="document_content" name="content_html" class="mt-1 block w-full rounded-md border px-3 py-2" rows="12">{{ old('content_html', $document->content_html) }}</textarea>
-                            @error('content_html') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <div class="max-h-96 overflow-y-auto border border-gray-200 rounded-lg dark:border-gray-700">
+                            <div class="p-4">
+                                <textarea id="document_content" name="content_html" class="mt-1 block w-full rounded-md border px-3 py-2" rows="12">{{ old('content_html', $document->content_html) }}</textarea>
+                                @error('content_html') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
                         </div>
                     </div>
 

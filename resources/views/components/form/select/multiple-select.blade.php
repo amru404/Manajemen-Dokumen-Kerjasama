@@ -37,7 +37,7 @@
                         class="group flex items-center justify-center rounded-full border-[0.7px] border-transparent bg-gray-100 py-1 pr-2 pl-2.5 text-sm text-gray-800 hover:border-gray-200 dark:bg-gray-800 dark:text-white/90 dark:hover:border-gray-800">
                         <span x-text="options.find(o => o.id === id).name"></span>
                         <button type="button" @click.stop="toggleOption(id)"
-                            class="ml-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                            class="ml-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-400">
                             <svg class="fill-current" role="button" width="14" height="14" viewBox="0 0 14 14"
                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -78,3 +78,4 @@
         </div>
     </div>
 </div>
+

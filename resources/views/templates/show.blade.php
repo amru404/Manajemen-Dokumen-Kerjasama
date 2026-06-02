@@ -4,7 +4,7 @@
     <x-common.page-breadcrumb pageTitle="Template Detail" />
 
     <div class="space-y-6 mt-4">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <div class="mb-4">
                 <h3 class="text-lg font-semibold">{{ $template->name }}</h3>
                 <p class="text-sm text-gray-500">Tipe: {{ $template->document_type }} | Dibuat oleh: {{ optional($template->user)->name }}</p>
@@ -30,3 +30,4 @@
     </div>
 
 @endsection
+

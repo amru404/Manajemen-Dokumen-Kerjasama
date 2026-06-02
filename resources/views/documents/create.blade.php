@@ -4,7 +4,7 @@
 <x-common.page-breadcrumb pageTitle="Create Document - {{ $type }}" />
 <div class="space-y-6 mt-4">
     <div
-        class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
 
         <!-- Alpine.js Container -->
         <div x-data="documentForm()" class="space-y-6">
@@ -64,7 +64,9 @@
                                         @foreach($juduls as $j)
                                         <option
                                             value="{{ $j->id }}"
-                                            {{ (old('judul_id') == $j->id || request('judul_id') == $j->id) ? 'selected' : '' }}>{{ $j->judul }}</option>
+                                            {{ (old('judul_id') == $j->id || request('judul_id') == $j->id) ? 'selected' : '' }}>
+                                                {{ $j->judul }} -  {{ optional($j->mitra)->nama }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('judul_id')
@@ -151,18 +153,20 @@
                                         class="space-y-4 py-6"
                                         @click="resetUploadField()">
                                         <h3 class="text-lg font-semibold text-gray-900">Gunakan Form Editor</h3>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Konten Dokumen</label>
-                                            <textarea
-                                                id="document_content"
-                                                name="content_html"
-                                                class="mt-1 block w-full rounded-md border px-3 py-2 font-mono text-sm"
-                                                rows="15"
-                                                x-model="formContent"
-                                                @change="formContent = $event.target.value">{{ old('content_html') }}</textarea>
-                                            @error('content_html')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
+                                        <div class="max-h-96 overflow-y-auto border border-gray-200 rounded-lg dark:border-gray-700">
+                                            <div class="p-4">
+                                                <label class="block text-sm font-medium text-gray-700">Konten Dokumen</label>
+                                                <textarea
+                                                    id="document_content"
+                                                    name="content_html"
+                                                    class="mt-1 block w-full rounded-md border px-3 py-2 font-mono text-sm"
+                                                    rows="15"
+                                                    x-model="formContent"
+                                                    @change="formContent = $event.target.value">{{ old('content_html') }}</textarea>
+                                                @error('content_html')
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
 

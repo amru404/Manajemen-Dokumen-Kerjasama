@@ -5,7 +5,7 @@
 
     <div class="space-y-6 mt-4">
         <!-- Document Info -->
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <div class="mb-4">
                 <h3 class="text-lg font-semibold">{{ optional($document->judul)->judul ?? 'Document' }}</h3>
                 <p class="text-sm text-gray-500">
@@ -56,7 +56,7 @@
         </div>
 
         <!-- Document Preview -->
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03] mt-3">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03] mt-3">
             <h4 class="text-lg font-semibold mb-4">Preview Dokumen</h4>
 
             @if($document->source === 'generate' && $document->content_html)

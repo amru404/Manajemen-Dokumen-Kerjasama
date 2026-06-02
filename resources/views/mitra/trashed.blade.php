@@ -6,10 +6,10 @@
         <a href="{{ route('mitra') }}" class="bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2">Back to Mitra</a>
     </div>
     <div class="space-y-6 md:space-y-7 mt-6">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <div class="max-w-full overflow-x-auto">
                 <table id="tableMitraTrashed" class="min-w-full whitespace-normal divide-y divide-gray-200 stripe hover w-full text-theme-xs dark:text-gray-400 text-start text-center">
-                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
                             <th class="px-6 py-3 break-words text-wrap font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">Nama</th>
@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                         @foreach($mitra as $m)
-                            <tr class="border-b border-gray-100 dark:border-white/[0.05]">
+                            <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <span class="block font-medium text-gray-700 break-words text-theme-sm dark:text-gray-400">{{ $loop->iteration }}</span>
                                 </td>
@@ -102,3 +102,4 @@
         });
     </script>
 @endsection
+

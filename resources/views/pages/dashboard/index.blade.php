@@ -158,7 +158,7 @@ $getStatusClassesActivity = function($status) {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <span
-                                    class="inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300 {{ $getStatusClassesActivity($document->activity_type ?? 'Aktif') }}">
+                                    class="inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-400 {{ $getStatusClassesActivity($document->activity_type ?? 'Aktif') }}">
                                     @if(isset($document->activity_type))
                                     {{ $document->activity_type ?? 'Aktif' }}
                                     @else
@@ -262,7 +262,7 @@ $getStatusClassesActivity = function($status) {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <span
-                                    class="inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300 {{ $getStatusClasses($document->status ?? 'Aktif') }}">
+                                    class="inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-400 {{ $getStatusClasses($document->status ?? 'Aktif') }}">
                                     @if(isset($document->status))
                                     {{ $document->status }}
                                     @else

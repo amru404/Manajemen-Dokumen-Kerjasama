@@ -102,8 +102,8 @@ class DocumentController extends Controller
 
         $documents = $query->latest()->paginate(10);
         $documents_file = $documents->first();
-        $pihak1 = optional($documents_file->pihak1)->name ?? '—';
-        $pihak2 = optional($documents_file->pihak2)->name ?? '—';
+        $pihak1 = $documents_file?->pihak1?->name ?? '—';
+        $pihak2 = $documents_file?->pihak2?->name ?? '—';
         // $user = optional($documents_file)->user;
         return view('documents.index', compact('documents', 'type', 'slug','documents_file', 'pihak1', 'pihak2'));
     }
@@ -134,8 +134,8 @@ class DocumentController extends Controller
         // Templates matching the document type
         $templates = Template::where('document_type', $type)->get();
         $mitras = Mitra::select('id','nama')->get();
-        $juduls = Judul_Kerjasama::select('id','judul')->get();
-
+        $juduls = Judul_Kerjasama::with('mitra')->select('id','judul','mitra_id')->get();
+        // dd($juduls);
         return view('documents.create', compact('templates', 'mitras', 'juduls', 'type', 'slug'));
     }
 
@@ -196,7 +196,7 @@ class DocumentController extends Controller
             $tpl = Template::find($data['template_id']);
             if ($tpl) $slug = $this->typeToSlug($tpl->document_type);
         }
-
+    
         Alert::success('Berhasil', 'Document berhasil dibuat.');
         return redirect()->route('documents.' . ($slug ?? 'mou'));
     }
@@ -347,17 +347,25 @@ class DocumentController extends Controller
         $htmlTemplate = ReplaceHelper::parse($template, $document);
      
         // parsing img
-        $images = collect([
+       $images = collect([
             'coverAtas'  => public_path('images/asset_dokumen/cover_atas.png'),
             'coverBawah' => public_path('images/asset_dokumen/cover_bawah.png'),
             'atas'       => public_path('images/asset_dokumen/atas.png'),
             'bawah'      => public_path('images/asset_dokumen/bawah.png'),
             'samping'    => public_path('images/asset_dokumen/samping.png'),
-            'logoPihak1' => $document->pihak1->logo ? storage_path('app/public/' . $document->pihak1->logo) : null,
-            'logoPihak2' => $document->pihak2->logo ? storage_path('app/public/' . $document->pihak2->logo) : null,
-        ])->map(fn($path) =>
-            'data:image/png;base64,' . base64_encode(file_get_contents($path))
-        );
+            'logoPihak1' => $document->pihak1?->tanda_tangan
+                ? storage_path('app/public/' . $document->pihak1->tanda_tangan)
+                : storage_path('app/public/mitra_assets/logo/bg-transparant.png'),
+            'logoPihak2' => $document->pihak2?->tanda_tangan
+                ? storage_path('app/public/' . $document->pihak2->tanda_tangan)
+                : storage_path('app/public/mitra_assets/logo/bg-transparant.png'),
+        ])->map(function ($path) {
+            if (!$path || !file_exists($path)) {
+                return null;
+            }
+
+            return 'data:image/png;base64,' . base64_encode(file_get_contents($path));
+        });
 
 
         // Jika sumber adalah upload, stream file dari storage

@@ -98,7 +98,7 @@
         }
     }
 }">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
         <!-- Header -->
         <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -125,7 +125,7 @@
         <!-- Table -->
         <div class="max-w-full overflow-x-auto">
             <table class="w-full">
-                <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+                <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                     <tr>
                         <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">
                             <div class="flex items-center gap-3">
@@ -149,7 +149,7 @@
                 </thead>
                 <tbody>
                     <template x-for="row in tableRowData" :key="row.id">
-                        <tr class="border-b border-gray-100 dark:border-white/[0.05]">
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="px-4 sm:px-6 py-3.5">
                                 <div class="flex items-center gap-3">
                                     <div @click="handleRowSelect(row.id)"

@@ -126,6 +126,9 @@
                             class="border border-dashed rounded-xl p-5">
                             <label class="block text-sm font-medium mb-3">Upload Tanda Tangan</label>
 
+                            <input type="hidden"
+                                name="remove_tanda_tangan"
+                                :value="removeFileFlag">
                             <input
                                 type="file"
                                 :name="name"
@@ -133,7 +136,6 @@
                                 class="hidden"
                                 accept="image/png,image/jpeg,image/webp,image/svg+xml"
                                 @change="handleFile($event.target.files[0])">
-
                                 <div
                                     @click="$refs.fileInput.click()"
                                     @drop.prevent="handleDrop"
@@ -181,20 +183,20 @@
                             isDragging: false,
                             file: null,
                             preview: initialPreview,
-
-                            handleDrop(e) {
-                                this.isDragging = false;
-                                const file = e
-                                    .dataTransfer
-                                    .files[0];
-                                this.handleFile(file);
-                            },
+                            removeFileFlag: 0,
 
                             handleFile(file) {
-                                if (!file) 
-                                    return;
-                                
-                                const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
+                                if (!file) return;
+
+                                this.removeFileFlag = 0;
+
+                                const validTypes = [
+                                    'image/png',
+                                    'image/jpeg',
+                                    'image/webp',
+                                    'image/svg+xml'
+                                ];
+
                                 if (!validTypes.includes(file.type)) {
                                     alert('Format tidak didukung');
                                     return;
@@ -203,17 +205,15 @@
                                 this.file = file;
                                 this.preview = URL.createObjectURL(file);
 
-                                // set ke input (biar ke-submit)
                                 const dt = new DataTransfer();
-                                dt
-                                    .items
-                                    .add(file);
+                                dt.items.add(file);
                                 this.$refs.fileInput.files = dt.files;
                             },
 
                             removeFile() {
                                 this.file = null;
                                 this.preview = '';
+                                this.removeFileFlag = 1;
                                 this.$refs.fileInput.value = '';
                             }
                         }

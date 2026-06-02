@@ -28,7 +28,7 @@
             body {
                 font-family: "Times New Roman", serif;
                 font-size: 14pt;
-                line-height: 1.2;
+                line-height: 1;
                 color: #000;
                 text-align: justify;
                 padding-top: 95px;
@@ -106,7 +106,43 @@
                 margin-bottom: 6px;
             }
 
-            
+        
+            table {
+                width: 120%;
+                border-collapse: collapse;
+                margin-left:-40px;
+                font-size: 10pt;
+            }
+
+            table th,
+            table td {
+                border: 1px solid #000;
+                padding: 6px 8px;
+                vertical-align: top;
+                min-width: 50px;
+            }
+
+           table th {
+                text-align: center !important;
+                vertical-align: middle;
+                min-width: 50px;
+
+            }
+
+            table p {
+                margin: 0;
+            }
+
+            table ul,
+            table ol {
+                margin: 0;
+                padding-left: 18px;
+            }
+
+            table li {
+                margin-bottom: 2px;
+            }
+
             .pasal {
                 font-weight: bold;
                 text-transform: uppercase;
@@ -145,6 +181,11 @@
             .signature {
                 margin-top: 50px;
                 width: 100%;
+            }
+
+            .pihak1-nama, .pihak2-nama {
+                font-size:11pt;
+                
             }
 
             .signature table {
@@ -320,29 +361,63 @@
             </div>
 
             
-            <div class="signature-block">
-                @if(optional($document->pihak1)->nama || optional($document->pihak2)->nama)
-                <div style="display:block; margin-top:36pt;">
-                    <div
-                        style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
-                        <div class="muted">Pihak Pertama</div>
-                        <img  class="ttd" src="{{ $images['logoPihak1'] }}" alt="ttd" srcset="">
-                        <div>
-                            <strong>{{ optional($document->pihak1)->nama ?? '—' }}</strong>
+          <div class="signature-block">
+            @php
+                $hasPihak1 = !empty(optional($document->pihak1)->nama);
+                $hasPihak2 = !empty(optional($document->pihak2)->nama);
+                $jumlahPihak = ($hasPihak1 ? 1 : 0) + ($hasPihak2 ? 1 : 0);
+            @endphp
+
+            @if($jumlahPihak > 0)
+                <div style="margin-top:36pt; text-align:right;">
+
+                    @if($jumlahPihak == 1)
+
+                        @if($hasPihak1)
+                            <div style="display:inline-block; width:45%; text-align:center;">
+                                <div>Pihak Pertama</div>
+                                <img class="ttd" src="{{ $images['logoPihak1'] }}" alt="ttd">
+                                <div>
+                                    <strong>{{ $document->pihak1->nama }}</strong>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($hasPihak2)
+                            <div style="display:inline-block; width:45%; text-align:center;">
+                                <div>Pihak Kedua</div>
+                                <img class="ttd" src="{{ $images['logoPihak2'] }}" alt="ttd">
+                                <div>
+                                    <strong>{{ $document->pihak2->nama }}</strong>
+                                </div>
+                            </div>
+                        @endif
+
+                    @else
+
+                        <div style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
+                            <div>Pihak Pertama</div>
+                            <img class="ttd" src="{{ $images['logoPihak1'] }}" alt="ttd">
+                            <div class="pihak1-nama">
+                                <strong>{{ $document->pihak1->nama }}</strong>
+                            </div>
                         </div>
-                    </div>
-                    <div style="display:inline-block; width:5%;"></div>
-                    <div
-                        style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
-                        <div class="muted">Pihak Kedua</div>
-                        <img class="ttd"  src="{{ $images['logoPihak2'] }}" alt="ttd" srcset="">
-                        <div>
-                            <strong>{{ optional($document->pihak2)->nama ?? '—' }}</strong>
+
+                        <div style="display:inline-block; width:5%;"></div>
+
+                        <div style="display:inline-block; width:45%; text-align:center; vertical-align:top;">
+                            <div>Pihak Kedua</div>
+                            <img class="ttd" src="{{ $images['logoPihak2'] }}" alt="ttd">
+                            <div class="pihak2-nama">
+                                <strong>{{ $document->pihak2->nama }}</strong>
+                            </div>
                         </div>
-                    </div>
+
+                    @endif
+
                 </div>
-                @endif
-            </div>
+            @endif
+        </div>
         </div>
     </body>
 </html>

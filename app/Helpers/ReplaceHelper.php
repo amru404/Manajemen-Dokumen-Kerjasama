@@ -25,7 +25,7 @@ class ReplaceHelper
             'pihak2-telp' => $document->pihak2->no_telp ?? '',
 
             'judul' => $document->judul->nama ?? '',
-            'nomor' => $document->nomor ?? '',
+            'nomor' => $document->nomor_document ?? '',
         ];
 
         return preg_replace_callback('/{{(.*?)}}/', function ($matches) use ($replacements) {

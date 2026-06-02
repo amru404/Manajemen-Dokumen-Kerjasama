@@ -4,7 +4,7 @@
     <x-common.page-breadcrumb pageTitle="Detail Judul Kerjasama"/>
 
     <div class="space-y-6 md:space-y-7 mt-6">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium dark:text-gray-200">{{ $judul_kerjasama->judul }}</h3>
                 <a href="{{ route('judul-kerjasama') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Kembali</a>
@@ -27,9 +27,9 @@
     </div>
 
     <div class="space-y-6 md:space-y-7 mt-6">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
              <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
-                <table class="w-full min-w-max text-sm text-left text-body table-auto rounded-base"><thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-white/[0.05] dark:bg-gray-900">
+                <table class="w-full min-w-max text-sm text-left text-body table-auto rounded-base"><thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">No</th>
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Judul</th>
@@ -37,13 +37,14 @@
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Start</th>
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">End</th>
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Document</th>
+                            <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Send Email</th>
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Status</th>
                             <th class="px-6 py-3 font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($documents as $d)
-                            <tr class="border-b border-gray-100 dark:border-white/[0.05]">
+                            <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <span class="block font-medium text-gray-700 break-words text-theme-sm dark:text-gray-400">{{ $loop->iteration + ($documents->currentPage()-1) * $documents->perPage() }}</span>
                                 </td>
@@ -69,6 +70,14 @@
                                     @endif
                                 </td>
                                  <td class="px-4 sm:px-6 py-3.5">
+                                    <a href="javascript:void(0)" 
+                                       class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400 cursor-pointer" 
+                                       title="Send Email"
+                                       onclick="confirmSendEmail('{{ $d->id }}', '{{ $d->status }}')">
+                                        <i class="fa-solid fa-paper-plane ml-1"></i>
+                                    </a>
+                                </td>
+                                 <td class="px-4 sm:px-6 py-3.5">
                                     <span class="inline-block px-2 py-1 rounded text-xs font-semibold  {{ match($d->status) {'draft' => 'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400',
                                     'submitted' => 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400',
                                     'approved' => 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400',
@@ -83,18 +92,20 @@
 
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <a href="{{ route('documents.edit', $d->id) }}" class="flex justify-center text-gray-700 size-5 hover:text-green-500" title="Edit">
+                                        <a href="{{ route('documents.show', $d->id) }}" class="flex justify-center text-gray-700 size-5 hover:text-indigo-500 dark:text-gray-400" title="View">
+                                            <svg class="inline h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        </a>
+                                        <a href="{{ route('documents.edit', $d->id) }}" class="flex justify-center text-gray-700 size-5 hover:text-green-500 dark:text-gray-400" title="Edit">
                                             <svg class="inline h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                         </a>
 
-                                        <form action="{{ route('documents.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini?');">
+                                        <form id="deleteForm-{{ $d->id }}" action="{{ route('documents.destroy', $d->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="flex justify-center text-gray-700 size-5 hover:text-red-500" title="Delete">
+                                            <button type="button" class="flex justify-center text-gray-700 size-5 hover:text-red-500 dark:text-gray-400" title="Delete" onclick="confirmDelete('{{ $d->id }}');">
                                                 <svg class="inline h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0V5a2 2 0 00-2-2h-3.5"/></svg>
                                             </button>
                                         </form>
-
                                     </div>
                                 </td>
                             </tr>
@@ -102,6 +113,45 @@
                     </tbody>
                 </table>
             </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmSendEmail(docId, status) {
+            const isPublished = status === 'published';
+            
+            Swal.fire({
+                title: isPublished ? 'Kirim Ulang Email?' : 'Kirim Email?',
+                text: isPublished ? 'Dokumen akan dikirim ulang ke pihak terkait' : 'Dokumen akan dikirim ke pihak terkait',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya, kirim',
+                reverseButtons: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/documents/${docId}/send-email`;
+                }
+            });
+        }
+
+        function confirmDelete(docId) {
+            Swal.fire({
+                title: 'Hapus Dokumen?',
+                text: 'Dokumen ini akan dihapus secara permanen',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya, hapus',
+                confirmButtonColor: '#ef4444',
+                reverseButtons: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteForm-' + docId).submit();
+                }
+            });
+        }
+    </script>
 
 @endsection
+

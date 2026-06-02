@@ -5,7 +5,7 @@
     <x-common.page-breadcrumb pageTitle="Data Judul Kerjasama"/>
     <a href="{{ route('judul-kerjasama.create') }}" class="mb-4 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white p-2 text-sm">Add Judul Kerjasama</a>
     <div class="space-y-6 md:space-y-7 mt-6">
-        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div class="overflow-hidden p-5 rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-white/[0.03]">
             <!-- Header -->
             <!-- Table -->
             <div class="max-w-full overflow-x-auto">
@@ -13,7 +13,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium dark:text-gray-200"></h3>
                 </div>
-                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-100 dark:border-white/[0.05] dark:bg-gray-900">
+                    <thead class="px-6 py-3.5 border-t border-gray-100 border-y bg-gray-100 dark:border-gray-700 dark:bg-gray-900">
                         <tr>
                             <th class="px-6 py-3 font-medium text-gray-500 sm:px-6 text-theme-xs dark:text-gray-400 text-start">
                                 <div class="flex items-center gap-3">
@@ -31,7 +31,7 @@
                     </thead>
                     <tbody>
                             @foreach($kerjasama as $kj)
-                            <tr class="border-b border-gray-100 dark:border-white/[0.05]">
+                            <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="px-4 sm:px-6 py-3.5">
                                     <div class="flex items-center gap-3">
                                         <div>
@@ -73,7 +73,7 @@
                                         $ba = $kj->documents->first(fn($d) => optional($d->template)->document_type == 'Berita Acara');
                                     @endphp
                                     @if($ba)
-                                        <a href="{{ route('documents.pdf', $ba->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open Berita Acara">Berita <i class="fa-solid fa-file-pdf ml-1"></i></a>
+                                        <a href="{{ route('documents.pdf', $ba->id) }}" class="text-gray-700 overflow-hidden text-ellipsis text-theme-sm dark:text-gray-400" title="Open Berita Acara"><i class="fa-solid fa-file-pdf ml-1"></i></a>
                                     @else
                                         <a href="{{ url('/documents/berita-acara/create') }}?judul_id={{ $kj->id }}" class="text-indigo-500" title="Buat Berita Acara">+ Buat</a>
                                     @endif
@@ -148,4 +148,5 @@
     </script>
 
 @endsection
+
 

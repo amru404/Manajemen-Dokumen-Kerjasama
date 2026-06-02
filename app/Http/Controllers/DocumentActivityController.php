@@ -19,8 +19,7 @@ class DocumentActivityController extends Controller
     if(auth()->user()->role === 'staff') {
         $activities = $activities->where('user_id', auth()->id());
     }
-    $activities = $activities->paginate(10)
-    ->appends(request()->query());
+    $activities = $activities->get();
 
     return view('document_activities.index', compact('activities'));
 
