@@ -42,6 +42,17 @@
                     <p class="text-gray-700">{{ optional($document->pihak2)->nama ?? '—' }}</p>
                 </div>
 
+                
+                <div>
+                    <h4 class="font-medium">Email Pihak 1 </h4>
+                    <p class="text-gray-700">{{ optional($document->pihak1)->email ?? '—' }}</p>
+                </div>
+
+                <div>
+                    <h4 class="font-medium">Email Pihak 2 </h4>
+                    <p class="text-gray-700">{{ optional($document->pihak2)->email ?? '—' }}</p>
+                </div>
+
                 <div>
                     <h4 class="font-medium">Tanggal Mulai</h4>
                     <p class="text-gray-700">{{ $document->start_date ? \Carbon\Carbon::parse($document->start_date)->format('d M Y') : '—' }}</p>

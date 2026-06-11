@@ -17,6 +17,7 @@ use App\Helpers\ReplaceHelper;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmail; 
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -135,12 +136,45 @@ class DocumentController extends Controller
         $templates = Template::where('document_type', $type)->get();
         $mitras = Mitra::select('id','nama')->get();
         $juduls = Judul_Kerjasama::with('mitra')->select('id','judul','mitra_id')->get();
-        // dd($juduls);
-        return view('documents.create', compact('templates', 'mitras', 'juduls', 'type', 'slug'));
+        
+        $numbers = Document::pluck('nomor_document')
+        ->map(function ($item) {
+            preg_match('/(\d+)$/', $item, $m);
+            return (int) $m[1];
+        })
+        ->toArray();
+
+        return view('documents.create', compact('templates', 'mitras', 'juduls', 'type', 'slug', 'numbers'));
     }
 
     public function store(Request $request)
     {
+        $year = date('Y');
+        $month = date('m');
+
+        // nomor document format: DOC/2026/07/001
+        $rows = DB::table('documents')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->pluck('nomor_document');
+
+        $numbers = $rows->map(function ($item) {
+            if (preg_match('/(\d+)$/', $item, $m)) {
+                return (int) $m[1];
+            }
+            return null;
+        })->filter()->sort()->values()->toArray();
+
+        $nextNumber = 1;
+
+        for ($i = 1; $i <= count($numbers) + 1; $i++) {
+            if (!in_array($i, $numbers)) {
+                $nextNumber = $i;
+                break;
+                }
+        }
+
+        // mode input form atau upload
         $mode = $request->input('mode', 'form');
 
         // Validasi
@@ -153,7 +187,6 @@ class DocumentController extends Controller
             'end_date' => 'nullable|date',
             'pihak_1_id' => 'nullable|exists:mitras,id',
             'pihak_2_id' => 'nullable|exists:mitras,id',
-            'nomor_document' => 'required|string',
         ]);
 
         
@@ -164,7 +197,6 @@ class DocumentController extends Controller
                 $q->where('document_type', $documentType);
             })
             ->exists();
-        // dd($exists);
 
         if ($exists) {
             return back()->withErrors([
@@ -194,12 +226,12 @@ class DocumentController extends Controller
             $data['source'] = 'upload';
         }
 
+        $nomorDocument = 'DOC/' . $year . '/' . $month . '/' .
+        str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
         $data['user_id'] = Auth::id();
-
-        $data['nomor_document'] = $request->input('nomor_document');
-
+        $data['nomor_document'] = $request->input('nomor_document') ?? $nomorDocument;
         $document = Document::create($data);
-        
         DocumentActivity::create([
             'document_id' => $document->id,
             'user_id' => auth()->id(),

@@ -7,6 +7,11 @@ use App\Models\Judul_Kerjasama as Kerjasama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Alignment;
+use Intervention\Image\Format;
 
 class MitraController extends Controller
 {
@@ -36,6 +41,9 @@ class MitraController extends Controller
     {
         // dd($request->all());
 
+        $manager = ImageManager::usingDriver(Driver::class);
+
+
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'penanggung_jawab' => 'required|string|max:255',
@@ -43,16 +51,30 @@ class MitraController extends Controller
             'alamat' => 'nullable|string',
             'no_telp' => 'nullable|string|max:50',
             'email' => 'required|email|max:255',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
-            'tanda_tangan' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:12288',
+            'tanda_tangan' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:12288 ',
         ]);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('mitra_assets/logo', 'public');
+            $file = $request->file('logo');
+            $image = $manager->decode($file->getPathname())
+                ->scaleDown(width: 1500);
+            $filename = Str::uuid() . '.webp';
+            $path = public_path('storage/mitra_assets/logo/' . $filename);
+            $image->encodeUsingFormat(Format::WEBP, quality: 80)
+                ->save($path);
+            $validated['logo'] = 'mitra_assets/logo/' . $filename;
         }
 
         if ($request->hasFile('tanda_tangan')) {
-            $validated['tanda_tangan'] = $request->file('tanda_tangan')->store('mitra_assets/tanda_tangan', 'public');
+             $file = $request->file('tanda_tangan');
+            $image = $manager->decode($file->getPathname())
+                ->scaleDown(width: 1500);
+            $filename = Str::uuid() . '.webp';
+            $path = public_path('storage/mitra_assets/tanda_tangan/' . $filename);
+            $image->encodeUsingFormat(Format::WEBP, quality: 80)
+                ->save($path);
+            $validated['tanda_tangan'] = 'mitra_assets/tanda_tangan/' . $filename;
         }
 
         Mitra::create($validated);
@@ -88,6 +110,7 @@ class MitraController extends Controller
      */
     public function update(Request $request, Mitra $mitra)
     {
+        $manager = ImageManager::usingDriver(Driver::class);
         $request->validate([
         'nama' => 'required|string|max:255',
         'penanggung_jawab' => 'required|string|max:255',
@@ -95,8 +118,8 @@ class MitraController extends Controller
         'alamat' => 'nullable|string',
         'no_telp' => 'nullable|string|max:50',
         'email' => 'required|email|max:255',
-        'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
-        'tanda_tangan' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+        'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:12288',
+        'tanda_tangan' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:12288 ',
     ]);
 
     $data = [
@@ -110,26 +133,44 @@ class MitraController extends Controller
 
     
     if ($request->hasFile('logo')) {
-        if ($mitra->logo) {
-            Storage::disk('public')->delete($mitra->logo);
+      if (!empty($mitra->logo)) {
+            $oldPath = public_path('storage/' . $mitra->logo);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
         }
-
-        $data['logo'] = $request->file('logo')->store('mitra_assets/logo', 'public');
+        $file = $request->file('logo');
+        $image = $manager->decode($file->getPathname())
+            ->scaleDown(width: 1500);
+        $filename = Str::uuid() . '.webp';
+        $path = public_path('storage/mitra_assets/logo/' . $filename);
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
+        $image->encodeUsingFormat(Format::WEBP, quality: 80)
+            ->save($path);
+        $data['logo'] = 'mitra_assets/logo/' . $filename;
     }
 
     
     if ($request->hasFile('tanda_tangan')) {
-        if ($mitra->tanda_tangan) {
-            Storage::disk('public')->delete($mitra->tanda_tangan);
+       if (!empty($mitra->tanda_tangan)) {
+            $oldPath = public_path('storage/' . $mitra->tanda_tangan);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
         }
-
-        $data['tanda_tangan'] = $request->file('tanda_tangan')->store('mitra_assets/tanda_tangan', 'public');
-    } elseif ($request->remove_tanda_tangan == 1) {
-        if ($mitra->tanda_tangan) {
-            Storage::disk('public')->delete($mitra->tanda_tangan);
+        $file = $request->file('tanda_tangan');
+        $image = $manager->decode($file->getPathname())
+            ->scaleDown(width: 1500);
+        $filename = Str::uuid() . '.webp';
+        $path = public_path('storage/mitra_assets/tanda_tangan/' . $filename);
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
         }
-
-        $mitra->tanda_tangan = null;
+        $image->encodeUsingFormat(Format::WEBP, quality: 80)
+            ->save($path);
+        $data['tanda_tangan'] = 'mitra_assets/tanda_tangan/' . $filename;
     }
 
     $mitra->update($data);

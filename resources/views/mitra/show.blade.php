@@ -44,7 +44,7 @@
                     @if($logoUrl)
                         <div>
                             <dt class="text-md font-medium text-gray-700">Logo</dt>
-                            <img src="{{ asset('storage/' . $mitra->logo) }}" alt="Logo Mitra" class="mt-2 max-h-40 object-contain>
+                            <img src="{{ asset('storage/' . $mitra->logo) }}" alt="Logo Mitra" class="mt-2 max-h-40 object-contain">
                         </div>
                     @endif
 

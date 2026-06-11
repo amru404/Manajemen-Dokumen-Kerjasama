@@ -51,7 +51,7 @@
                                     class="mt-1 block w-full rounded-md border px-3 py-2"
                                     :value="nomorDocument"
                                     @change="nomorDocument = $event.target.value"
-                                    required="required">
+                                    >
                                     @error('nomor_document')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
@@ -260,14 +260,23 @@
                                     },
 
                                     init() {
-                                        // Generate default nomor document
+                                         const usedNumbers = this.usedNumbers; 
+                                        // contoh: [1,2,4]
+
+                                        let next = 1;
+
+                                        for (let i = 1; i <= usedNumbers.length + 1; i++) {
+                                            if (!usedNumbers.includes(i)) {
+                                                next = i;
+                                                break;
+                                            }
+                                        }
+
                                         const now = new Date();
                                         const year = now.getFullYear();
-                                        const random = Math
-                                            .floor(Math.random() * 10000)
-                                            .toString()
-                                            .padStart(4, '0');
-                                        this.nomorDocument = `DOC${random}/${year}`;
+                                        const month = String(now.getMonth() + 1).padStart(2, '0');
+
+                                        this.nomorDocument = `DOC/${year}/${month}/${String(next).padStart(3, '0')}`;
                                     }
                                 }
                             }
